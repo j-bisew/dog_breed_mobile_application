@@ -1,5 +1,12 @@
 import http.server
 import helperFunctions
+import json
+
+POST_PATHS = {
+    '/login': helperFunctions.loginPathHandler,
+    '/register': helperFunctions.registerPathHandler,
+    '/verifyToken': helperFunctions.verifyTokenPathHandler
+}
 
 class AuthRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -13,6 +20,23 @@ class AuthRequestHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b'Not Found')
     
+    def do_POST(self):
+        if self.path in POST_PATHS:
+            handler = POST_PATHS[self.path]
+            if handler:
+                handler(self)
+            else:
+                self.send_response(501)
+                self.end_headers()
+                self.wfile.write(b'Not Implemented')
+
+
+        else:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write(b'Not Found')
+            
+
 def run(server_class=http.server.HTTPServer, handler_class=AuthRequestHandler, port=8010):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
