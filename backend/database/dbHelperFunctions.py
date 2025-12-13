@@ -164,6 +164,7 @@ def getDogRaceInfoPathHandler(self):
                 breedInfo = f.read()
             breedFullName = breedInfo.split('\n')[0].split(':')[1].strip()
             breedDescription = breedInfo.split('\n')[1].split(':')[1].strip()
+            responseData['breedName'] = raceInfo['name']
             responseData['breedFullName'] = breedFullName
             responseData['breedDescription'] = breedDescription
 
