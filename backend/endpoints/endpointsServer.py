@@ -9,6 +9,11 @@ METODS = {
     '/submitDogBreedFeedback': endpointsHelperFunctions.submitDogBreedFeedbackPathHandler,
 }
 
+AUTHORIZATION_REQUIRED_PATHS = [
+    '/submitDogBreedFeedback',
+    '/getDogBreedInfo',
+]
+
 class EndpointsRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/':
@@ -22,6 +27,15 @@ class EndpointsRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(b'Not Found')
     def do_POST(self):
         if self.path in METODS:
+            if self.path in AUTHORIZATION_REQUIRED_PATHS:
+                isAuthorized = endpointsHelperFunctions.authorizationCheck(self)
+                if not isAuthorized:
+                    self.send_response(401)
+                    self.end_headers()
+                    self.wfile.write(b'Unauthorized')
+                    return
+
+
             handler = METODS[self.path]
             if handler:
                 handler(self)

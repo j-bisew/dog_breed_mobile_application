@@ -25,8 +25,8 @@ def registerUserPathHandler(self):
         }
     }
     registrationRequestJson = json.dumps(registrationRequestData).encode('utf-8')
-    conn = http.client.HTTPConnection(DATABASE_IP)
-    conn.request("POST", "/registerUser", body=registrationRequestJson, headers={'Content-Type': 'application/json'})
+    conn = http.client.HTTPConnection(AUTH_IP)
+    conn.request("POST", "/register", body=registrationRequestJson, headers={'Content-Type': 'application/json'})
     response = conn.getresponse()
     if response.status == 200:
         self.send_response(200)
@@ -54,13 +54,14 @@ def loginUserPathHandler(self):
         }
     }
     loginRequestJson = json.dumps(loginRequestData).encode('utf-8')
-    conn = http.client.HTTPConnection(DATABASE_IP)
-    conn.request("POST", "/verifyUsernamePassword", body=loginRequestJson, headers={'Content-Type': 'application/json'})
+    conn = http.client.HTTPConnection(AUTH_IP)
+    conn.request("POST", "/login", body=loginRequestJson, headers={'Content-Type': 'application/json'})
     response = conn.getresponse()
     if response.status == 200:
+        response_data = response.read()
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(b'Login successful')
+        self.wfile.write(response_data)
     else:
         self.send_response(response.status)
         self.end_headers()
@@ -191,3 +192,28 @@ def submitDogBreedFeedbackPathHandler(self):
         response_data = response.read()
         self.wfile.write(response_data)
     
+def authorizationCheck(self):
+    # Check for Authorization header
+    authHeader = self.headers.get('Authorization')
+    if not authHeader:
+        print("Authorization header missing")
+        return False
+
+    token = authHeader.split(" ")[1] if " " in authHeader else authHeader
+
+    # Verify token with auth server
+    conn = http.client.HTTPConnection(AUTH_IP)
+    tokenData = {
+        'tokenData': {
+            'token': token
+        }
+    }
+    tokenRequestJson = json.dumps(tokenData).encode('utf-8')
+    conn.request("POST", "/verifyToken", body=tokenRequestJson, headers={'Content-Type': 'application/json'})
+    response = conn.getresponse()
+    if response.status == 200:
+        print("Authorization successful")
+        return True
+    else:
+        print("Authorization failed")
+        return False
