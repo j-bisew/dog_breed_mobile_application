@@ -1,21 +1,17 @@
 import http.server
-import endpointsHelperFunctions
 import json
+import recognitionHelperFunctions
 
 METODS = {
-    '/registerUser': endpointsHelperFunctions.registerUserPathHandler,
-    '/loginUser': endpointsHelperFunctions.loginUserPathHandler,
-    '/getDogBreedInfo': endpointsHelperFunctions.getDogBreedInfoPathHandler,
-    '/submitDogBreedFeedback': endpointsHelperFunctions.submitDogBreedFeedbackPathHandler,
+    '/submitDogPhoto': recognitionHelperFunctions.submitDogPhotoPathHandler,
 }
-
-class EndpointsRequestHandler(http.server.BaseHTTPRequestHandler):
+class RecognitionRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            self.wfile.write(b'Welcome to the Endpoints Server!')
+            self.wfile.write(b'Welcome to the Recognition Server!')
         else:
             self.send_response(404)
             self.end_headers()
@@ -34,10 +30,10 @@ class EndpointsRequestHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b'Not Found')
 
-def run(server_class=http.server.HTTPServer, handler_class=EndpointsRequestHandler, port=8000):
+def run(server_class=http.server.HTTPServer, handler_class=RecognitionRequestHandler, port=8030):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
-    print(f'Starting endpoints server on port {port}...')
+    print(f'Starting recognition server on port {port}...')
     httpd.serve_forever()
 
 if __name__ == "__main__":

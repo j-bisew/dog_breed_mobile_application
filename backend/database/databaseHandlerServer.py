@@ -7,7 +7,10 @@ METODS = {
     '/requestSalt': dbHelperFunctions.requestSaltPathHandler,
     '/verifyUsernamePassword': dbHelperFunctions.verifyUsernamePasswordPathHandler,
     '/isUsernameOrEmailTaken': dbHelperFunctions.isUsernameOrEmailTakenPathHandler,
-    '/registerUser': dbHelperFunctions.registerUserPathHandler
+    '/registerUser': dbHelperFunctions.registerUserPathHandler,
+    '/getDogRaceInfo': dbHelperFunctions.getDogRaceInfoPathHandler,
+    '/addDogRace': dbHelperFunctions.addRacePathHandler,
+    '/incrementDogRaceQuestionedCount': dbHelperFunctions.incrementDogRaceQuestionedCountPathHandler,
 }
 
 class DatabaseRequestHandler(http.server.BaseHTTPRequestHandler):
