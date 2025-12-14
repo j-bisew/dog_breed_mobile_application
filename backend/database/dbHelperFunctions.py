@@ -1,10 +1,15 @@
 import sqlite3
+import os
 import json
 
 AUTH_DB = 'authServer.db'
+RACE_DB = 'raceDB.db'
 
 authDBConnection = sqlite3.connect(AUTH_DB)
 authDBCursor = authDBConnection.cursor()
+
+raceDBConnection = sqlite3.connect(RACE_DB)
+raceDBCursor = raceDBConnection.cursor()
 
 def requestSaltPathHandler(self):
     # {usernameData: {"username": "user"}}
@@ -102,3 +107,118 @@ def registerUserPathHandler(self):
         self.send_response(400)
         self.end_headers()
         self.wfile.write(b'Username or email already taken')
+
+
+def getDogRaceInfoPathHandler(self):
+    # {raceRequestData: {"raceId": 1, "name": "Poodle"}}
+    content_length = int(self.headers['Content-Length'])
+    post_data = self.rfile.read(content_length)
+    print(f"Received race request data: {post_data}")
+    raceRequestData = post_data.decode('utf-8')
+    raceRequestData = json.loads(raceRequestData).get('raceRequestData', {})
+    raceId = raceRequestData.get('raceId')
+    name = raceRequestData.get('name')
+
+    if raceId is not None:
+        query = "SELECT id, name, folderName FROM dog_races WHERE id = ?"
+        params = (raceId,)
+    elif name is not None:
+        query = "SELECT id, name, folderName FROM dog_races WHERE name = ?"
+        params = (name,)
+    else:
+        self.send_response(400)
+        self.end_headers()
+        self.wfile.write(b'Invalid request data')
+        return
+    
+    raceDBCursor.execute(query, params)
+    result = raceDBCursor.fetchone()
+    if result:
+        raceInfo = {
+            'id': result[0],
+            'name': result[1],
+            'folderName': result[2]
+        }
+
+        # Increment timesSearched
+        raceDBCursor.execute('''
+            UPDATE dog_races
+            SET timesSearched = timesSearched + 1
+            WHERE id = ?
+        ''', (raceInfo['id'],))
+        raceDBConnection.commit()
+
+        responseData = {
+
+        }
+
+        mainBreedPhotoPath = os.path.join('racesFolder', raceInfo['folderName'], 'mainPhoto.jpg')
+        if os.path.exists(mainBreedPhotoPath):
+            with open(mainBreedPhotoPath, 'rb') as f:
+                photoData = f.read()
+            responseData['mainPhotoData'] = photoData.decode('latin1')  # Send as latin1 string
+        
+        breedInfoPath = os.path.join('racesFolder', raceInfo['folderName'], 'summary')
+        if os.path.exists(breedInfoPath):
+            with open(breedInfoPath, 'r', encoding='utf-8') as f:
+                breedInfo = f.read()
+            breedFullName = breedInfo.split('\n')[0].split(':')[1].strip()
+            breedDescription = breedInfo.split('\n')[1].split(':')[1].strip()
+            responseData['breedName'] = raceInfo['name']
+            responseData['breedFullName'] = breedFullName
+            responseData['breedDescription'] = breedDescription
+
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json.dumps(responseData).encode('utf-8'))
+
+
+
+
+
+    else:
+        self.send_response(404)
+        self.end_headers()
+        self.wfile.write(b'Race not found')
+
+
+def addRacePathHandler(self):
+    # {raceData: {"name": "Poodle", "folderName": "poodle_folder"}}
+    content_length = int(self.headers['Content-Length'])
+    post_data = self.rfile.read(content_length)
+    print(f"Received race data: {post_data}")
+    raceData = post_data.decode('utf-8')
+    raceData = json.loads(raceData).get('raceData', {})
+    name = raceData.get('name')
+    folderName = raceData.get('folderName')
+    try:
+        raceDBCursor.execute('''
+            INSERT INTO dog_races (name, folderName)
+            VALUES (?, ?)
+        ''', (name, folderName))
+        raceDBConnection.commit()
+        self.send_response(201)
+        self.end_headers()
+        self.wfile.write(b'Race added successfully')
+    except sqlite3.IntegrityError as e:
+        self.send_response(400)
+        self.end_headers()
+        self.wfile.write(b'Error adding race')
+
+def incrementDogRaceQuestionedCountPathHandler(self):
+    # {raceNameData: {"raceName": "Poodle"}}
+    content_length = int(self.headers['Content-Length'])
+    post_data = self.rfile.read(content_length)
+    print(f"Received race ID data for search count increment: {post_data}")
+    raceNameData = post_data.decode('utf-8')
+    raceNameData = json.loads(raceNameData).get('raceNameData', {})
+    raceName = raceNameData.get('raceName')
+    raceDBCursor.execute('''
+        UPDATE dog_races
+        SET timesQuestioned = timesQuestioned + 1
+        WHERE name = ?
+    ''', (raceName,))
+    raceDBConnection.commit()
+    self.send_response(200)
+    self.end_headers()
+    self.wfile.write(b'Questioned count incremented successfully')

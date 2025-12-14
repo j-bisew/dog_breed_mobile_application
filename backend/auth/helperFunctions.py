@@ -1,7 +1,6 @@
 import json
 import bcrypt
 import time
-import secrets
 import base64
 import hashlib
 import http.client
@@ -45,6 +44,21 @@ def loginPathHandler(self):
 
     # Verify password
     hashedPassword = bcrypt.hashpw(password.encode('utf-8'), salt.encode('utf-8'))
+
+    verifyRequestData = {
+        'loginData': {
+            'username': username,
+            'password': hashedPassword.decode('utf-8')
+        }
+    }
+    verifyRequestJson = json.dumps(verifyRequestData).encode('utf-8')
+    conn.request("POST", "/verifyUsernamePassword", body=verifyRequestJson, headers={'Content-Type': 'application/json'})
+    response = conn.getresponse()
+    if response.status != 200:
+        self.send_response(401)
+        self.end_headers()
+        self.wfile.write(b'Invalid username or password')
+        return
 
 
 
