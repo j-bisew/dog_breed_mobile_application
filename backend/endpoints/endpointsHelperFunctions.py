@@ -1,4 +1,5 @@
 import json
+import os
 import http.client
 
 AUTH_IP = '127.0.0.1:8010'
@@ -83,6 +84,14 @@ def getDogBreedInfoPathHandler(self):
         
         boundary = contentType.split("boundary=")[1]
         content_length = int(self.headers['Content-Length'])
+
+        # Limit content length to 10MB
+        if content_length > 20 * 1024 * 1024:
+            self.send_response(413)
+            self.end_headers()
+            self.wfile.write(b'Request entity too large')
+            return
+
         post_data = self.rfile.read(content_length)
         print(f"Received multipart/form-data of length: {len(post_data)}")
         parts = post_data.split(b'--' + boundary.encode())
@@ -107,16 +116,19 @@ def getDogBreedInfoPathHandler(self):
         # Save the received photo as mainPhoto.jpg for testing purposes
         with open('aaaa.jpg', 'wb') as f:
             f.write(photoData)
-            
 
-        recognitionRequestData = {
-            'photoData': photoData.decode('latin1')
-        }
-        # encode JSON using latin1 so the recognition server can decode with latin1
-        recognitionRequestJson = json.dumps(recognitionRequestData).encode('latin1')
+        # Build multipart/form-data body to send the raw binary photo to the Recognition service
+        boundary = '----Boundary' + str(int.from_bytes(os.urandom(4), 'big'))
+        crlf = b"\r\n"
+        body = b''
+        body += b'--' + boundary.encode('utf-8') + crlf
+        body += b'Content-Disposition: form-data; name="photo"; filename="photo.jpg"' + crlf
+        body += b'Content-Type: image/jpeg' + crlf + crlf
+        body += photoData + crlf
+        body += b'--' + boundary.encode('utf-8') + b'--' + crlf
 
         conn = http.client.HTTPConnection(RECOGNITION_IP)
-        conn.request("POST", "/submitDogPhoto", body=recognitionRequestJson, headers={'Content-Type': 'application/json'})
+        conn.request("POST", "/submitDogPhoto", body=body, headers={'Content-Type': f'multipart/form-data; boundary={boundary}'})
         response = conn.getresponse()
 
         if response.status == 200:

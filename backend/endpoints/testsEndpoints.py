@@ -3,7 +3,7 @@ import http.client
 import json
 import random
 
-photoPath = 'mainPhoto.jpg'
+photoPath = 'temp_photo.jpg'
 url = '127.0.0.1:8000'
 
 name = 'USER'
