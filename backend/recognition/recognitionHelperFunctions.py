@@ -54,25 +54,38 @@ def detect_dog_yolo(pil_image, conf_threshold=0.5):
     print("YOLO detection results:", results)
 
     dogs = []
+    anyAnimal = []
+
     for r in results:
         for box in r.boxes:
             cls = int(box.cls[0])
             conf = float(box.conf[0])
             print(f"Detected class {cls} with confidence {conf}")
-
-            if cls >= 14 and cls <= 23 and conf > conf_threshold:
+            if cls == DOG_CLASS_ID and conf > conf_threshold:
                 dogs.append((box, conf))
 
-    if not dogs:
+            elif cls >= 15 and cls <= 23 and cls != DOG_CLASS_ID and conf > conf_threshold:
+                anyAnimal.append((box, conf))
+
+    if not dogs and not anyAnimal:
         return None, None
 
-    box, conf = max(
-        dogs,
-        key=lambda b: (b[0].xyxy[0][2] - b[0].xyxy[0][0]) *
-                      (b[0].xyxy[0][3] - b[0].xyxy[0][1])
-    )
+    elif not dogs and anyAnimal:
+        box, conf = max(
+            anyAnimal,
+            key=lambda b: (b[0].xyxy[0][2] - b[0].xyxy[0][0]) *
+                          (b[0].xyxy[0][3] - b[0].xyxy[0][1])
+        )
+        return box, conf
+    
+    else:
+        box, conf = max(
+            dogs,
+            key=lambda b: (b[0].xyxy[0][2] - b[0].xyxy[0][0]) *
+                        (b[0].xyxy[0][3] - b[0].xyxy[0][1])
+        )
 
-    return box, conf
+        return box, conf
 
 def crop_dog(pil_image, box):
     img = np.array(pil_image)
