@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <!--    HEADER-->
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/app_background"
+            android:padding="24dp"
+            android:elevation="2dp">
+
+
+        <TextView
+                android:id="@+id/appNameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="WoofDetect"
+                android:textAlignment="center"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Identifies dog breed from a image!"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/text_secondary" />
+
+    </LinearLayout>
+
+    <!--    CARD-->
+    <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:layout_gravity="center_horizontal"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_card_gradient"
+                android:padding="24dp"
+                android:alpha="50">
+
+            <ImageView
+                    android:id="@+id/logoImage"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_dog"
+                    android:contentDescription="Logo"
+                    android:layout_marginBottom="16dp" />
+
+            <TextView
+                    android:id="@+id/cardTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Woof! Let's identify your furry friend!"
+                    android:textAlignment="center"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+
+            <!-- PODNAGŁÓWEK -->
+            <TextView
+                    android:id="@+id/cardSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Just snap a photo or choose one from your gallery, and I'll tell you what breed your adorable dog is!"
+                    android:textAlignment="center"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/text_secondary" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp">
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/cameraButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:backgroundTint="#7D8FBF"
+                android:drawableLeft="@drawable/photo_camera_24dp_000000_fill0_wght300_grad0_opsz24"
+                android:text="@string/take_a_photo"
+                android:textSize="16sp"/>
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/galleryButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:backgroundTint="#826D98"
+                android:drawableLeft="@drawable/image_24dp_000000_fill0_wght300_grad0_opsz24"
+                android:text="@string/choose_from_gallery"
+                android:textSize="16sp"/>
+    </LinearLayout>
+
+
+</LinearLayout>
