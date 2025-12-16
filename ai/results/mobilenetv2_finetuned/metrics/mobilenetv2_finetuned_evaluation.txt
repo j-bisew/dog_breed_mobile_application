@@ -1,0 +1,2 @@
+Model: mobilenetv2_finetuned
+Dok�adno��: 0.9643

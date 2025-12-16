@@ -1,0 +1,3 @@
+Model: mobilenetv2
+Dok�adno��: 0.9600
+

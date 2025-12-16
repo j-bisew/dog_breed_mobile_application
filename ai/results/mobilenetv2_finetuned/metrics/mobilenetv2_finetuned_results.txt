@@ -1,0 +1,12 @@
+Model: mobilenetv2_finetuned
+Dok³adnoœæ: 0.7841
+
+Raport klasyfikacji:
+
+        Podstawowe metryki:
+        Precision (macro): 0.7834
+        Recall (macro): 0.7682  
+        F1-score (macro): 0.7674
+        Support: 2863 samples
+        Liczba klas: 138
+        
