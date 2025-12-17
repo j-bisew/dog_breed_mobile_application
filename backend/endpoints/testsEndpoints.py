@@ -4,7 +4,7 @@ import json
 import random
 
 photoPath = 'mainPhoto.jpg'
-url = '127.0.0.1:8000'
+url = 'host.docker.internal:8000'
 
 name = 'USER'
 username = ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=10))

@@ -20,7 +20,7 @@ def loginPathHandler(self):
     print(f"Username: {username}, Password: {password}")
 
     # Send request to database server to get stored salt and hashed password
-    IP = '127.0.0.1:8020'
+    IP = 'host.docker.internal:8020'
     saltRequestData = {
         'usernameData': {
             'username': username
@@ -106,7 +106,7 @@ def registerPathHandler(self):
         if not username.isalnum():
             return False
         
-        conn = http.client.HTTPConnection('127.0.0.1:8020')
+        conn = http.client.HTTPConnection('host.docker.internal:8020')
         usernameCheckData = {
             'usernameData': {
                 'username': username
@@ -132,7 +132,7 @@ def registerPathHandler(self):
     print(f"Storing user: Name: {name}, Email: {email}, Hashed Password: {hashedPassword}")
 
     # Send request to database server to register user
-    IP = '127.0.0.1:8020'
+    IP = 'host.docker.internal:8020'
     registrationRequestData = {
         'registrationData': {
             'name': name,

@@ -36,7 +36,7 @@ def testUserRegistrationAndLogin():
     }
     # Register user
     registrationJson = json.dumps(registrationData).encode('utf-8')
-    conn = http.client.HTTPConnection('127.0.0.1:8010')
+    conn = http.client.HTTPConnection('host.docker.internal:8010')
     conn.request("POST", "/register", body=registrationJson, headers={'Content-Type': 'application/json'})
     response = conn.getresponse()
     assert response.status == 201

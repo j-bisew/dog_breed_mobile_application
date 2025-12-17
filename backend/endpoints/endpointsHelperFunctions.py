@@ -2,9 +2,9 @@ import json
 import os
 import http.client
 
-AUTH_IP = '127.0.0.1:8010'
-DATABASE_IP = '127.0.0.1:8020'
-RECOGNITION_IP = '127.0.0.1:8030'
+AUTH_IP = 'host.docker.internal:8010'
+DATABASE_IP = 'host.docker.internal:8020'
+RECOGNITION_IP = 'host.docker.internal:8030'
 
 def registerUserPathHandler(self):
     # {registrationData: {"name": "Name", "username": "user", "email": "email", "password": "password"}}
@@ -136,10 +136,11 @@ def getDogBreedInfoPathHandler(self):
             
             response_json = json.loads(response_data.decode('utf-8'))
             breedName = response_json.get('breedName', 'UnknownBreed')
-            assurance = response_json.get('assurance', 0.0)
+            confidence = response_json.get('confidence', 0.0)
             breedInfoRequestData = {
                 'raceRequestData': {
-                    'name': breedName
+                    'name': breedName,
+                    'confidence': confidence
                 }
             }
             breedInfoRequestJson = json.dumps(breedInfoRequestData).encode('utf-8')
