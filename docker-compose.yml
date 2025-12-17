@@ -1,0 +1,45 @@
+services:
+  endpoints:
+    build: ./backend/endpoints
+    container_name: dogbreed_endpoints
+    ports:
+      - "8000:8000"
+    # Allow container to reach host loopback via host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  auth:
+    build: ./backend/auth
+    container_name: dogbreed_auth
+    ports:
+      - "8010:8010"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  database:
+    build: ./backend/database
+    container_name: dogbreed_database
+    ports:
+      - "8020:8020"
+    volumes:
+      - ./backend/database/racesFolder:/app/racesFolder:rw
+      - ./backend/database/data:/app/data:rw
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  recognition:
+    build: ./backend/recognition
+    container_name: dogbreed_recognition
+    ports:
+      - "8030:8030"
+    volumes:
+      - ./backend/recognition/models:/app/models:ro
+      - ./backend/recognition/dog_photos:/app/dog_photos:rw
+      - ./backend/recognition/yolov8n.pt:/app/yolov8n.pt:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
