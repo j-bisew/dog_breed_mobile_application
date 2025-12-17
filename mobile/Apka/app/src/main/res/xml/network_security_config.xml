@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Allow cleartext only for local development hosts -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain>127.0.0.1</domain>
+        <domain>10.0.2.2</domain>
+        <domain>10.0.3.2</domain>
+        <domain>host.docker.internal</domain>
+        <domain>146.59.17.122</domain>
+    </domain-config>
+</network-security-config>
