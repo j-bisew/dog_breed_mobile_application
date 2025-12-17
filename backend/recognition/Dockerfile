@@ -30,5 +30,7 @@ RUN python -m pip install --no-cache-dir -r requirements.txt
 # Since Torch is already installed, it will skip torch and just get the helpers
 RUN python -m pip install --no-cache-dir ultralytics==8.3.23
 
+RUN python -m pip install --upgrade tensorflow-cpu
+
 EXPOSE 8030
 CMD ["python", "recognitionServer.py"]

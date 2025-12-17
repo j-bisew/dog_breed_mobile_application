@@ -128,8 +128,8 @@ curl -X POST \
 
 ## Downstream services (from code)
 
-- Auth service: 127.0.0.1:8010
-- Database service: 127.0.0.1:8020
-- Recognition service: 127.0.0.1:8030
+- Auth service: host.docker.internal:8010
+- Database service: host.docker.internal:8020
+- Recognition service: host.docker.internal:8030
 
 If you want, I can add example curl requests for each endpoint, or update the doc with the exact DB response schema once the Database service schema is known.

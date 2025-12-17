@@ -2,9 +2,9 @@ import json
 import os
 import http.client
 
-AUTH_IP = '127.0.0.1:8010'
-DATABASE_IP = '127.0.0.1:8020'
-RECOGNITION_IP = '127.0.0.1:8030'
+AUTH_IP = 'host.docker.internal:8010'
+DATABASE_IP = 'host.docker.internal:8020'
+RECOGNITION_IP = 'host.docker.internal:8030'
 
 def registerUserPathHandler(self):
     # {registrationData: {"name": "Name", "username": "user", "email": "email", "password": "password"}}

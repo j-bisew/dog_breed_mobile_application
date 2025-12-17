@@ -24,8 +24,13 @@ services:
     ports:
       - "8020:8020"
     volumes:
+    # Mount the specific database file ONLY
+    # host_path : container_path
+      - ./backend/database/authServer.db:/app/authServer.db:rw
+      - ./backend/database/raceDB.db:/app/raceDB.db:rw
+    
+    # If you have folders for photos/races in that same spot:
       - ./backend/database/racesFolder:/app/racesFolder:rw
-      - ./backend/database/data:/app/data:rw
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
