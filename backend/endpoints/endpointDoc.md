@@ -71,7 +71,7 @@ curl -X POST \
     ```
   - Recognition response (expected):
     ```json
-    { "breedName": "Poodle", "assurance": 0.95 }
+    { "breedName": "Poodle", "confidence": 0.95 }
     ```
   - Database request (JSON sent to DB server):
     ```json

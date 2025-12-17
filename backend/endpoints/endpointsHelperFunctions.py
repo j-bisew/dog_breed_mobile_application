@@ -136,10 +136,11 @@ def getDogBreedInfoPathHandler(self):
             
             response_json = json.loads(response_data.decode('utf-8'))
             breedName = response_json.get('breedName', 'UnknownBreed')
-            assurance = response_json.get('assurance', 0.0)
+            confidence = response_json.get('confidence', 0.0)
             breedInfoRequestData = {
                 'raceRequestData': {
-                    'name': breedName
+                    'name': breedName,
+                    'confidence': confidence
                 }
             }
             breedInfoRequestJson = json.dumps(breedInfoRequestData).encode('utf-8')

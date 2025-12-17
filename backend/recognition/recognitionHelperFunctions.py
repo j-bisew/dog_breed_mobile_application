@@ -190,7 +190,7 @@ def submitDogPhotoPathHandler(self):
 
     response_data = {
         'breedName': breedName,
-        'assurance': 90.0
+        'confidence': confidence
     }
     print(f"Predicted breed: {breedName} with confidence {confidence}%")
 
