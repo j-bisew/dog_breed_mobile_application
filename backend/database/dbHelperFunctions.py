@@ -148,29 +148,60 @@ def getDogRaceInfoPathHandler(self):
         ''', (raceInfo['id'],))
         raceDBConnection.commit()
 
-        responseData = {
-
-        }
+        # Build metadata (JSON) and attach main photo as a separate multipart part
+        response_metadata = {}
 
         mainBreedPhotoPath = os.path.join('racesFolder', raceInfo['folderName'], 'mainPhoto.jpg')
+        photo_bytes = None
         if os.path.exists(mainBreedPhotoPath):
             with open(mainBreedPhotoPath, 'rb') as f:
-                photoData = f.read()
-            responseData['mainPhotoData'] = photoData.decode('latin1')  # Send as latin1 string
-        
+                photo_bytes = f.read()
+
         breedInfoPath = os.path.join('racesFolder', raceInfo['folderName'], 'summary')
         if os.path.exists(breedInfoPath):
             with open(breedInfoPath, 'r', encoding='utf-8') as f:
                 breedInfo = f.read()
             breedFullName = breedInfo.split('\n')[0].split(':')[1].strip()
             breedDescription = breedInfo.split('\n')[1].split(':')[1].strip()
-            responseData['breedName'] = raceInfo['name']
-            responseData['breedFullName'] = breedFullName
-            responseData['breedDescription'] = breedDescription
+            response_metadata['breedName'] = raceInfo['name']
+            response_metadata['breedFullName'] = breedFullName
+            response_metadata['breedDescription'] = breedDescription
 
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(json.dumps(responseData).encode('utf-8'))
+        # If we have photo bytes, respond using multipart/mixed with two parts:
+        # part 1 = application/json metadata, part 2 = binary image (jpeg)
+        if photo_bytes is not None:
+            boundary = '----Boundary' + str(int.from_bytes(os.urandom(4), 'big'))
+            crlf = b"\r\n"
+            body = b''
+
+            # Part 1: JSON metadata
+            body += b'--' + boundary.encode('utf-8') + crlf
+            body += b'Content-Type: application/json; charset=utf-8' + crlf + crlf
+            body += json.dumps(response_metadata).encode('utf-8') + crlf
+
+            # Part 2: image attachment
+            body += b'--' + boundary.encode('utf-8') + crlf
+            body += b'Content-Type: image/jpeg' + crlf
+            body += b'Content-Disposition: attachment; filename="mainPhoto.jpg"' + crlf
+            body += b'Content-Transfer-Encoding: binary' + crlf + crlf
+            body += photo_bytes + crlf
+
+            # Closing boundary
+            body += b'--' + boundary.encode('utf-8') + b'--' + crlf
+
+            self.send_response(200)
+            self.send_header('Content-Type', f'multipart/mixed; boundary={boundary}')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        else:
+            # No photo available — return JSON metadata only
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            response_body = json.dumps(response_metadata).encode('utf-8')
+            self.send_header('Content-Length', str(len(response_body)))
+            self.end_headers()
+            self.wfile.write(response_body)
 
 
 
