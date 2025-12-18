@@ -29,10 +29,7 @@ class DogRepository {
             Log.d(TAG, "Sending photo to API: ${photoFile.name}, size: ${photoFile.length()} bytes")
 
 
-            val response = ApiClient.apiService.analyzeDogPhoto(
-                photo = photoPart,
-                authorization = null // TODO: Add authorization
-            )
+            val response = ApiClient.apiService.analyzeDogPhoto(photo = photoPart)
 
             val dto = response.body()
             if (response.isSuccessful && dto != null) {
@@ -78,10 +75,7 @@ class DogRepository {
 
             Log.d(TAG, "Submitting feedback for breed: $breedName")
 
-            val response = ApiClient.apiService.submitFeedback(
-                body = requestBody,
-                authorization = null // TODO: Add authorization
-            )
+            val response = ApiClient.apiService.submitFeedback(body = requestBody)
 
             if (response.isSuccessful) {
                 Log.d(TAG, "Feedback submitted successfully")
