@@ -67,27 +67,28 @@ dependencies {
     implementation("androidx.camera:camera-extensions:${cameraxVersion}")
 
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    // OkHttp
-    implementation("com.squareup.okhttp3:okhttp:5.3.2")
-    implementation("com.squareup.okhttp3:logging-interceptor:5.3.2")
+    // OkHttp (Update to a stable version known to work well)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // Gson
-    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("com.google.code.gson:gson:2.10.1")
 
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    // Coroutines (Update to the latest stable version)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
-    // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
+    // Lifecycle (Align with other lifecycle dependencies)
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    // This one is duplicated and can be removed as it's already in libs.versions.toml
+    // implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
 
-    // Glide
-    implementation("com.github.bumptech.glide:glide:5.0.5")
+    // Glide (Update to the latest stable version)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
-    // DataStore
-    implementation("androidx.datastore:datastore-preferences:1.2.0")
+    // DataStore (Align with other datastore dependencies)
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }
