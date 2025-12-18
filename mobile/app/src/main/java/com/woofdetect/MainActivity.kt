@@ -25,15 +25,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             lifecycleScope.launch {
                 val token = tokenManager.getToken().first()
 
-                val startFragment = if (token.isNullOrEmpty()) {
-                    AuthChoiceFragment()
-                } else {
+                val startFragment = if (!token.isNullOrEmpty()) {
                     HomeFragment()
+                } else {
+                    AuthChoiceFragment()
                 }
 
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, startFragment)
-                .commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, startFragment)
+                    .commit()
             }
         }
     }
