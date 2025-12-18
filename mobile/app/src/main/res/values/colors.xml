@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!-- main -->
-    <color name="app_background">#FDFDFFFF</color>
+    <color name="app_background">#FDFDFF</color>
     <color name="lilac_background">#f4f5ff</color>
 
     <!-- card -->
@@ -19,4 +19,5 @@
 
     <!-- buttons -->
     <color name="button">#6569DE</color>
+    <color name="button_pressed">#4b4fbc</color>
 </resources>
