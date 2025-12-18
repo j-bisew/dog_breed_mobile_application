@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Tryb jasny -->
+    <!-- Tryb ciemny -->
 
     <!-- Tła -->
-    <color name="app_background">#FDFDFF</color>
-    <color name="lilac_background">#F4F5FF</color>
-    <color name="card_background">#E9D5FF</color>
+    <color name="app_background">#1E1E2E</color>
+    <color name="lilac_background">#2A2A3E</color>
+    <color name="card_background">#3A3A52</color>
 
     <!-- Teksty -->
-    <color name="text_primary">#2A294D</color>
-    <color name="text_secondary">#6B6B6B</color>
+    <color name="text_primary">#E8E8F0</color>
+    <color name="text_secondary">#B8B8C8</color>
 
     <!-- Przyciski -->
-    <color name="button">#6569DE</color>
-    <color name="button_pressed">#4B4FBC</color>
+    <color name="button">#7B7FE8</color>
+    <color name="button_pressed">#5B5FC8</color>
 
     <!-- Domyślne kolory Material -->
     <color name="purple_200">#FFBB86FC</color>

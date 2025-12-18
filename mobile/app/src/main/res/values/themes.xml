@@ -3,5 +3,13 @@
         <item name="colorPrimary">@color/button</item>
         <item name="colorSecondary">@color/teal_200</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!-- Kolory dla TextInputLayout -->
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+
+        <!-- Kolor tła -->
+        <item name="android:windowBackground">@color/lilac_background</item>
     </style>
 </resources>
