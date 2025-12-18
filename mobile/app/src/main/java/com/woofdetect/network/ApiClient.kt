@@ -37,13 +37,14 @@ object ApiClient {
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
 
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .build()
+    private val retrofit: Retrofit
+        get() = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
 
-    val apiService: ApiService by lazy {
-        retrofit.create(ApiService::class.java)
-    }
+    val apiService: ApiService
+        get() = retrofit.create(ApiService::class.java)
+
 }
