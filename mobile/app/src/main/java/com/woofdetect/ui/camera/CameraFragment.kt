@@ -3,38 +3,64 @@ package com.woofdetect.ui.camera
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.woofdetect.R
 import com.woofdetect.databinding.FragmentCameraBinding
 import com.woofdetect.ui.result.ResultFragment
 import java.io.File
 
 class CameraFragment : Fragment(R.layout.fragment_camera) {
-
     private lateinit var binding: FragmentCameraBinding
-    private lateinit var imageCapture: ImageCapture
+    private  var imageCapture: ImageCapture? = null
+    private val activityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                startCamera()
+            } else {
+                Toast.makeText(requireContext(), "Camera permission denied.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentCameraBinding.bind(view)
 
-        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 100)
-        }
+        checkCameraPermission()
 
-        startCamera()
 
         binding.captureButton.setOnClickListener {
             takePhoto()
+        }
+    }
+
+    private fun checkCameraPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                startCamera()
+            }
+
+            shouldShowRequestPermissionRationale(android.Manifest.permission.CAMERA) -> {
+                activityResultLauncher.launch(android.Manifest.permission.CAMERA)
+            }
+            else -> {
+                activityResultLauncher.launch(android.Manifest.permission.CAMERA)
+            }
         }
     }
 
@@ -42,10 +68,11 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
         cameraProviderFuture.addListener({
+            if (!isAdded) return@addListener
             val cameraProvider = cameraProviderFuture.get()
 
             val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(binding.previewView.surfaceProvider)
+                it.surfaceProvider = binding.previewView.surfaceProvider
             }
 
             imageCapture = ImageCapture.Builder()
@@ -54,16 +81,26 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
 
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
+            try {
             cameraProvider.unbindAll()
             cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageCapture)
-
+            } catch (e: Exception) {
+                Log.e("CameraFragment", "Use case binding failed", e)
+            }
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     private fun takePhoto() {
+        val imageCapture = imageCapture ?: return
         val photoFile = File(
             requireContext().cacheDir,
             "photo_${System.currentTimeMillis()}.jpg"
+        )
+
+        val photoUri = FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.provider",
+            photoFile
         )
 
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
@@ -73,11 +110,11 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    val uri = Uri.fromFile(photoFile)
-                    navigateToResultFragment(uri)
+                    navigateToResultFragment(photoUri)
                 }
 
                 override fun onError(exception: ImageCaptureException) {
+                    Log.e("CameraFragment", "Photo capture failed: ${exception.message}", exception)
                     exception.printStackTrace()
                 }
             }
