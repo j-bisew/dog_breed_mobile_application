@@ -1,86 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/lilac_background">
 
-    <LinearLayout
-            android:layout_width="match_parent"
+    <!-- Loading ProgressBar - widoczny podczas ładowania -->
+    <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="visible" />
 
-        <!-- Tytuł -->
-        <TextView
-                android:layout_height="wrap_content"
+    <TextView
+            android:id="@+id/loadingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Analizuję zdjęcie..."
+            android:textSize="16sp"
+            android:textColor="@color/text_primary"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/loadingProgressBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ScrollView z wynikiem - ukryty podczas ładowania -->
+    <ScrollView
+            android:id="@+id/resultScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
                 android:layout_width="match_parent"
-                android:text="Wynik analizy"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="16dp" />
-
-        <!-- Karta z wynikiem -->
-        <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:radius="20dp"
-                android:elevation="8dp"
-                android:layout_marginBottom="24dp"
-                android:background="@color/card_background">
+                android:orientation="vertical"
+                android:padding="24dp">
 
-            <LinearLayout
+            <!-- Tytuł -->
+            <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:text="Wynik analizy"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="16dp" />
 
-                <!-- Zdjęcie psa -->
-                <ImageView
-                        android:id="@+id/resultImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_launcher_background"
-                        android:contentDescription="Zdjęcie psa"
-                        android:layout_marginBottom="16dp" />
+            <!-- Karta z wynikiem -->
+            <androidx.cardview.widget.CardView
+                    android:id="@+id/resultCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="8dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/card_background">
 
-                <!-- Nazwa rasy -->
-                <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/breedName"
-                        android:text="Golden Retriever"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginBottom="8dp" />
-
-                <!-- Pewność -->
-                <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/confidenceText"
-                        android:text="Pewność: 92%"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginBottom="12dp" />
-
-                <!-- Opis -->
-                <TextView
+                <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/breedDescription"
-                        android:text="Golden Retriever to przyjazna, inteligentna rasa psa..."
-                        android:textColor="@color/text_primary" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-        <!-- Spróbuj ponownie -->
-        <com.google.android.material.button.MaterialButton
-                android:id="@+id/tryAgainButton"
-                android:text="Spróbuj ponownie"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                    <!-- Zdjęcie psa -->
+                    <ImageView
+                            android:id="@+id/resultImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="Zdjęcie psa"
+                            android:layout_marginBottom="16dp" />
 
-    </LinearLayout>
-</ScrollView>
+                    <!-- Nazwa rasy -->
+                    <TextView
+                            android:id="@+id/breedName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Golden Retriever"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="8dp"
+                            tools:text="Golden Retriever" />
+
+                    <!-- Pewność -->
+                    <TextView
+                            android:id="@+id/confidenceText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Pewność: 92%"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginBottom="12dp"
+                            tools:text="Pewność: 92%" />
+
+                    <!-- Opis -->
+                    <TextView
+                            android:id="@+id/breedDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Golden Retriever to przyjazna, inteligentna rasa psa..."
+                            android:textColor="@color/text_primary"
+                            android:lineSpacingExtra="4dp"
+                            tools:text="Golden Retriever to przyjazna, inteligentna rasa psa, znana ze swojego łagodnego usposobienia..." />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Przycisk zgłaszania błędu -->
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/reportErrorButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Zgłoś błędną rasę"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone" />
+
+            <!-- Spróbuj ponownie -->
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/tryAgainButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Spróbuj ponownie"
+                    android:visibility="gone" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- TextView dla błędów - ukryty domyślnie -->
+    <TextView
+            android:id="@+id/errorTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Wystąpił błąd"
+            android:textSize="16sp"
+            android:textColor="@android:color/holo_red_dark"
+            android:textAlignment="center"
+            android:padding="24dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible"
+            tools:text="Błąd: Nie można połączyć z serwerem" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

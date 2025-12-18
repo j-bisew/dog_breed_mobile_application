@@ -110,7 +110,7 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    navigateToResultFragment(photoUri)
+                    navigateToResultFragment(photoUri, photoFile.absolutePath)
                 }
 
                 override fun onError(exception: ImageCaptureException) {
@@ -121,9 +121,9 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
         )
     }
 
-    private fun navigateToResultFragment(uri: Uri) {
+    private fun navigateToResultFragment(uri: Uri, filePath: String) {
         parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, ResultFragment.newInstance(uri))
+            .replace(R.id.fragmentContainer, ResultFragment.newInstance(uri, filePath))
             .addToBackStack(null)
             .commit()
     }
