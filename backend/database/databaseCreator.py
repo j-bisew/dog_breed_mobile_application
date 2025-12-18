@@ -54,20 +54,20 @@ def createRaceDatabase(dbName):
             timesQuestioned INTEGER DEFAULT 0
         )''')
     
-    cursor.execute('''INSERT INTO
-        dog_races (name, folderName)
-        VALUES
-        ('labrador_retriever', 'labrador_retriever'),
-        ('german_shepherd', 'german_shepherd'),
-        ('golden_retriever', 'golden_retriever'),
-        ('bulldog', 'bulldog'),
-        ('beagle', 'beagle'),
-        ('poodle', 'poodle'),
-        ('rottweiler', 'rottweiler'),
-        ('yorkshire_terrier', 'yorkshire_terrier'),
-        ('boxer', 'boxer'),
-        ('dachshund', 'dachshund')
-    ''')                   
+    # cursor.execute('''INSERT INTO
+    #     dog_races (name, folderName)
+    #     VALUES
+    #     ('labrador_retriever', 'labrador_retriever'),
+    #     ('german_shepherd', 'german_shepherd'),
+    #     ('golden_retriever', 'golden_retriever'),
+    #     ('bulldog', 'bulldog'),
+    #     ('beagle', 'beagle'),
+    #     ('poodle', 'poodle'),
+    #     ('rottweiler', 'rottweiler'),
+    #     ('yorkshire_terrier', 'yorkshire_terrier'),
+    #     ('boxer', 'boxer'),
+    #     ('dachshund', 'dachshund')
+    # ''')                   
         
     conn.commit()
     conn.close()
