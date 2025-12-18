@@ -1,0 +1,7 @@
+<resources>
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/button</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+</resources>
