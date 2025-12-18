@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Zaloguj się"
-            app:backgroundTint="@color/login_button" />
+            app:backgroundTint="@color/button" />
 
     <Button
             android:id="@+id/registerButton"
@@ -45,5 +45,5 @@
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/login_button" />
+            android:backgroundTint="@color/button" />
 </LinearLayout>
