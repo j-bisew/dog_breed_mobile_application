@@ -1,7 +1,11 @@
 package com.woofdetect.model
 
-class DogResult {
-//    dane domenowe
-//    to, co naprawdę obchodzi aplikację
-//    np. breedName, confidence, description
-}
+import android.graphics.Bitmap
+
+data class DogResult(
+    val breedName: String,
+    val breedFullName: String,
+    val breedDescription: String,
+    val confidence: Double,
+    val breedPhoto: Bitmap? = null
+)
