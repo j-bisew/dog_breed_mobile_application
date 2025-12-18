@@ -1,5 +1,6 @@
 package com.woofdetect.network
 
+import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -19,12 +20,22 @@ object ApiClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
+    private var authInterceptor: AuthInterceptor? = null
+
+    fun initialize(context: Context) {
+        authInterceptor = AuthInterceptor(context.applicationContext)
+    }
+
+    private val okHttpClient: OkHttpClient
+        get() = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .apply {
+                authInterceptor?.let { addInterceptor(it) }
+            }
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
 
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)

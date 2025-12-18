@@ -1,6 +1,10 @@
 package com.woofdetect.network
 
 import com.woofdetect.network.dto.DogAnalysisResponse
+import com.woofdetect.network.dto.LoginRequest
+import com.woofdetect.network.dto.LoginResponse
+import com.woofdetect.network.dto.RegisterRequest
+import com.woofdetect.network.dto.RegisterResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -12,7 +16,21 @@ import retrofit2.http.*
 
 interface ApiService {
 
-    // POST /getDogBreedInfo
+    // ========== AUTH ENDPOINTS ==========
+    @POST("loginUser")
+    @Headers("Content-Type: application/json")
+    suspend fun login(
+        @Body request: LoginRequest
+    ): Response<LoginResponse>
+
+    @POST("registerUser")
+    @Headers("Content-Type: application/json")
+    suspend fun register(
+        @Body request: RegisterRequest
+    ): Response<RegisterResponse>
+
+
+    // ========== DOG ANALYSIS ENDPOINTS ==========
     @Multipart
     @POST("getDogBreedInfo")
     suspend fun analyzeDogPhoto(
@@ -20,7 +38,6 @@ interface ApiService {
         @Header("Authorization") authorization: String? = null
     ): Response<DogAnalysisResponse>
 
-    // POST /submitDogBreedFeedback
     @POST
     @Headers("Content-Type: application/json")
     suspend fun submitFeedback(
