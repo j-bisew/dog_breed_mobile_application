@@ -1,6 +1,7 @@
 package com.woofdetect.network
 
 import com.woofdetect.network.dto.DogAnalysisResponse
+import okhttp3.ResponseBody
 import com.woofdetect.network.dto.LoginRequest
 import com.woofdetect.network.dto.LoginResponse
 import com.woofdetect.network.dto.RegisterRequest
@@ -36,7 +37,7 @@ interface ApiService {
     suspend fun analyzeDogPhoto(
         @Part photo: MultipartBody.Part,
         @Header("Authorization") authorization: String? = null
-    ): Response<DogAnalysisResponse>
+    ): Response<ResponseBody>
 
     @POST
     @Headers("Content-Type: application/json")

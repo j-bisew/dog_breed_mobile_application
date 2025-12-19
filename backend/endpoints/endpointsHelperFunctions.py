@@ -149,21 +149,27 @@ def getDogBreedInfoPathHandler(self):
             breedInfoResponse = conn.getresponse()
             print(f"Breed info response status: {breedInfoResponse.status}")
             response_data = breedInfoResponse.read()
-            print(f"Breed info response data: {response_data}")
+            conn.close()
             if breedInfoResponse.status == 200:
                 
                 self.send_response(200)
+                # Forward the Content-Type header (important for multipart responses)
+                contentType = breedInfoResponse.getheader('Content-Type')
+                if contentType:
+                    self.send_header('Content-Type', contentType)
+                else:
+                    # Fallback if header is missing for some reason
+                    self.send_header('Content-Type', 'application/json')
+                
+                self.send_header('Connection', 'close')
+                
                 self.end_headers()
                 self.wfile.write(response_data)
-
-
-
-
             else:
                 self.send_response(breedInfoResponse.status)
+                self.send_header('Connection', 'close')
                 self.end_headers()
-                breedInfoData = breedInfoResponse.read()
-                self.wfile.write(breedInfoData)
+                self.wfile.write(response_data)
         
         else:
             self.send_response(response.status)

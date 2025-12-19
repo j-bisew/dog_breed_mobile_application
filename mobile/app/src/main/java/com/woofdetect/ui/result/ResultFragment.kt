@@ -120,6 +120,10 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
      */
     private fun showResult(dogResult: DogResult) {
         binding.apply {
+
+            //Zaloguj wynik
+            Log.d(TAG, "Analysis result: $dogResult")
+
             // Ukryj loading, pokaż zawartość
             loadingProgressBar.visibility = View.GONE
             resultCard.visibility = View.VISIBLE
