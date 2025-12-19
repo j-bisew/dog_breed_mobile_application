@@ -118,6 +118,7 @@ def getDogRaceInfoPathHandler(self):
     raceRequestData = json.loads(raceRequestData).get('raceRequestData', {})
     raceId = raceRequestData.get('raceId')
     name = raceRequestData.get('name')
+    confidence = raceRequestData.get('confidence')
 
     if raceId is not None:
         query = "SELECT id, name, folderName FROM dog_races WHERE id = ?"
@@ -166,6 +167,8 @@ def getDogRaceInfoPathHandler(self):
             response_metadata['breedName'] = raceInfo['name']
             response_metadata['breedFullName'] = breedFullName
             response_metadata['breedDescription'] = breedDescription
+            if confidence is not None:
+                response_metadata['confidence'] = confidence
 
         # If we have photo bytes, respond using multipart/mixed with two parts:
         # part 1 = application/json metadata, part 2 = binary image (jpeg)
@@ -191,15 +194,14 @@ def getDogRaceInfoPathHandler(self):
 
             self.send_response(200)
             self.send_header('Content-Type', f'multipart/mixed; boundary={boundary}')
-            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Connection', 'close')
             self.end_headers()
             self.wfile.write(body)
         else:
             # No photo available — return JSON metadata only
             self.send_response(200)
             self.send_header('Content-Type', 'application/json; charset=utf-8')
-            response_body = json.dumps(response_metadata).encode('utf-8')
-            self.send_header('Content-Length', str(len(response_body)))
+            self.send_header('Connection', 'close')
             self.end_headers()
             self.wfile.write(response_body)
 

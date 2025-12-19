@@ -120,8 +120,14 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
      */
     private fun showResult(dogResult: DogResult) {
         binding.apply {
+
+            //Zaloguj wynik
+            Log.d(TAG, "Analysis result: $dogResult")
+
             // Ukryj loading, pokaż zawartość
             loadingProgressBar.visibility = View.GONE
+            loadingText.visibility = View.GONE
+            resultScrollView.visibility = View.VISIBLE
             resultCard.visibility = View.VISIBLE
             tryAgainButton.visibility = View.VISIBLE
 
@@ -147,6 +153,8 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
     private fun showError(message: String) {
         binding.apply {
             loadingProgressBar.visibility = View.GONE
+            loadingText.visibility = View.GONE
+            resultScrollView.visibility = View.GONE
             resultCard.visibility = View.GONE
             errorTextView?.apply {
                 visibility = View.VISIBLE
@@ -165,9 +173,14 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
         binding.apply {
             if (isLoading) {
                 loadingProgressBar.visibility = View.VISIBLE
+                loadingText.visibility = View.VISIBLE
+                resultScrollView.visibility = View.GONE
                 resultCard.visibility = View.GONE
                 tryAgainButton.visibility = View.GONE
                 errorTextView?.visibility = View.GONE
+            } else {
+                loadingProgressBar.visibility = View.GONE
+                loadingText.visibility = View.GONE
             }
         }
     }
