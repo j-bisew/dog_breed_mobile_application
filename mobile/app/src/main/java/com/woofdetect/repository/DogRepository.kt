@@ -118,14 +118,21 @@ class DogRepository {
                         } else if (partStr.contains("Content-Type: image/", ignoreCase = true)) {
                             val idx = partStr.indexOf("\r\n\r\n")
                             if (idx != -1) {
-                                val imgStart = idx + 4
-                                // The part might have a trailing CRLF before the next boundary
+                                var imgStart = idx + 4
                                 var imgEnd = part.size
+                                
+                                // Remove trailing CRLF if present
                                 if (imgEnd - 2 >= imgStart && part[imgEnd - 2] == '\r'.code.toByte() && part[imgEnd - 1] == '\n'.code.toByte()) {
                                     imgEnd -= 2
                                 }
+                                
+                                // Skip any leading garbage (like stray CRLFs) until JPEG SOI marker (FF D8)
+                                while (imgStart < imgEnd - 1 && (part[imgStart] != 0xFF.toByte() || part[imgStart + 1] != 0xD8.toByte())) {
+                                    imgStart++
+                                }
+
                                 imageBytes = part.copyOfRange(imgStart, imgEnd)
-                                Log.d(TAG, "Found image data in multipart, size: ${imageBytes.size} bytes")
+                                Log.d(TAG, "Extracted image data, size: ${imageBytes.size} bytes")
                             }
                         }
                     }
