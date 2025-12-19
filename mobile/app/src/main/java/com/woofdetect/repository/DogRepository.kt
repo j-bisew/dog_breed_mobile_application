@@ -6,6 +6,8 @@ import android.util.Log
 import com.google.gson.Gson
 import com.woofdetect.model.DogResult
 import com.woofdetect.network.ApiClient
+import com.woofdetect.network.dto.FeedbackRequest
+import com.woofdetect.network.dto.RaceNameData
 import okhttp3.ResponseBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -204,9 +206,9 @@ class DogRepository {
 
     suspend fun submitFeedback(breedName: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val requestBody = mapOf(
-                "raceNameData" to mapOf(
-                    "raceName" to breedName.lowercase()
+            val requestBody = FeedbackRequest(
+                raceNameData = RaceNameData(
+                    raceName = breedName.lowercase()
                 )
             )
 

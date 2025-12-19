@@ -1,6 +1,7 @@
 package com.woofdetect.network
 
 import com.woofdetect.network.dto.DogAnalysisResponse
+import com.woofdetect.network.dto.FeedbackRequest
 import okhttp3.ResponseBody
 import com.woofdetect.network.dto.LoginRequest
 import com.woofdetect.network.dto.LoginResponse
@@ -39,11 +40,11 @@ interface ApiService {
         @Header("Authorization") authorization: String? = null
     ): Response<ResponseBody>
 
-    @POST
+    @POST("submitDogBreedFeedback")
     @Headers("Content-Type: application/json")
     suspend fun submitFeedback(
-        @Body body: Map<String, Map<String, String>>,
+        @Body body: FeedbackRequest,
         @Header("Authorization") authorization: String? = null
-    ): Response<String>
+    ): Response<ResponseBody>
 
 }
