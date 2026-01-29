@@ -31,10 +31,13 @@ def registerUserPathHandler(self):
     response = conn.getresponse()
     if response.status == 201:
         response_data = response.read()
+        
+        self.close_connection = True
+        
         self.send_response(201)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(response_data)))
-        # self.send_header('Connection', 'close')
+        self.send_header('Connection', 'close')
         self.end_headers()
         self.wfile.write(response_data)
         self.wfile.flush()
@@ -76,10 +79,14 @@ def loginUserPathHandler(self):
     if response.status == 200:
         response_data = response.read()
         print(f"Login response data: {response_data} (Len: {len(response_data)})")
+        
+        # Explicitly instruct server loop to close connection after this request
+        self.close_connection = True
+        
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(response_data)))
-        # self.send_header('Connection', 'close') # Let BaseHTTPRequestHandler handle connection state
+        self.send_header('Connection', 'close') 
         self.end_headers()
         self.wfile.write(response_data)
         self.wfile.flush()
