@@ -48,7 +48,7 @@ class EndpointsRequestHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b'Not Found')
 
-def run(server_class=http.server.HTTPServer, handler_class=EndpointsRequestHandler, port=8000):
+def run(server_class=http.server.ThreadingHTTPServer, handler_class=EndpointsRequestHandler, port=8000):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print(f'Starting endpoints server on port {port}...')
