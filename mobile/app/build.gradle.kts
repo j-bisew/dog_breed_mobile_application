@@ -39,6 +39,23 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+
+            all {
+                it.jvmArgs("-Xmx2g")
+
+                it.testLogging {
+                    events("passed", "skipped", "failed")
+                    exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+                    showStandardStreams = true
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -91,4 +108,26 @@ dependencies {
 
     // DataStore (Align with other datastore dependencies)
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // ========== TESTING DEPENDENCIES ==========
+    // JUnit 4 - framework do testów jednostkowych
+    testImplementation("junit:junit:4.13.2")
+    // Mockk - biblioteka do mockowania w Kotlin
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("io.mockk:mockk-android:1.13.8")
+    // Coroutines Test - testowanie coroutines
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    // Robolectric - testowanie komponentów Androida bez emulatora
+    testImplementation("org.robolectric:robolectric:4.11.1")
+    // AndroidX Test - biblioteki testowe
+    testImplementation("androidx.test:core:1.5.0")
+    testImplementation("androidx.test:core-ktx:1.5.0")
+    testImplementation("androidx.test.ext:junit:1.1.5")
+    testImplementation("androidx.test.ext:junit-ktx:1.1.5")
+    // Architecture Components Testing
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    // Truth - bardziej czytelne asercje (opcjonalne)
+    testImplementation("com.google.truth:truth:1.1.5")
+    // MockWebServer - do testowania API (opcjonalne)
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 }
