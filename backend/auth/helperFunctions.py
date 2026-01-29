@@ -7,37 +7,6 @@ import http.client
 import hmac
 
 def loginPathHandler(self):
-    """
-    Handle a login POST request read from the handler (self).
-    Expected input (HTTP request body, JSON):
-        {
-            "loginData": {
-                "username": "<username>",
-                "password": "<plaintext password>"
-    Behavior:
-    - Reads Content-Length from self.headers and the request body from self.rfile.
-    - Parses JSON and extracts username and plaintext password.
-    - Requests the stored salt for username from the auth database service at
-      host.docker.internal:8020 by POSTing {"usernameData": {"username": username}} to /requestSalt.
-    - If the salt request returns a non-200 status, responds with HTTP 401 and body 'User not found'.
-    - Computes the hashed password using bcrypt.hashpw(password.encode('utf-8'), salt.encode('utf-8')).
-      (Assumes the returned salt is a bcrypt-compatible salt string.)
-    - Sends a verification request to /verifyUsernamePassword on the same DB service with
-      {"loginData": {"username": username, "password": "<hashedPassword (utf-8 decoded)>"}}.
-    - If verification returns a non-200 status, responds with HTTP 401 and body 'Invalid username or password'.
-    - On successful verification, generates an authentication token via generateToken({'username': username}).
-    - Responds with HTTP 200 and JSON body:
-        {"message": "Login successful", "token": "<generatedToken>"}
-      and sets Content-Type: application/json and an accurate Content-Length header.
-    - Attempts to flush self.wfile; ignores exceptions from flush.
-    Return:
-    - None (the function writes HTTP responses directly to self.wfile and uses self.send_response / self.send_header / self.end_headers).
-    Side effects and notes:
-    - Assumes self behaves like BaseHTTPRequestHandler (has headers, rfile, wfile, send_response, send_header, end_headers).
-    - Makes network calls to an external service; network errors or unexpected responses may raise exceptions not explicitly caught here.
-    - Logs request and intermediate values via print() (including username and password prints in current code) — printing plaintext passwords is a security risk and should be removed in production.
-    - Assumes salt is stored and returned in bcrypt-compatible format; improper salt encoding will cause hashing/verification to fail.
-    """
 
     # {loginData: {"username": "user", "password": "pass"}}
 
@@ -103,16 +72,11 @@ def loginPathHandler(self):
         'token': generatedToken
     }
     response_bytes = json.dumps(response).encode('utf-8')
-    
-    self.send_response(200)
+    self.send_response(202)
     self.send_header('Content-Type', 'application/json')
     self.send_header('Content-Length', str(len(response_bytes)))
     self.end_headers()
     self.wfile.write(response_bytes)
-    try:
-        self.wfile.flush()
-    except Exception:
-        pass
 
 
 def registerPathHandler(self):
