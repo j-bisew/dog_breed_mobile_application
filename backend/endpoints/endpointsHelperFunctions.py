@@ -59,18 +59,9 @@ def loginUserPathHandler(self):
     conn.request("POST", "/login", body=loginRequestJson, headers={'Content-Type': 'application/json'})
     response = conn.getresponse()
     if response.status == 200:
-        response_data = response.read()
-        response_json = json.loads(response_data.decode('utf-8'))
-        message = response_json.get('message', 'Login successful')
-        token = response_json.get('token', '')
-        response_data = json.dumps({
-            'message': message,
-            'token': token
-        }).encode('utf-8')
-        print(f"Login response data: {response_data}")
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(response_data)
+        self.wfile.write(b'Login successful')
     else:
         self.send_response(response.status)
         self.end_headers()

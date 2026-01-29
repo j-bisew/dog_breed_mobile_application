@@ -72,7 +72,7 @@ def loginPathHandler(self):
         'token': generatedToken
     }
     response_bytes = json.dumps(response).encode('utf-8')
-    self.send_response(200)
+    self.send_response(202)
     self.send_header('Content-Type', 'application/json')
     self.send_header('Content-Length', str(len(response_bytes)))
     self.end_headers()
