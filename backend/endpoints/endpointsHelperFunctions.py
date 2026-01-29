@@ -34,6 +34,7 @@ def registerUserPathHandler(self):
         self.send_response(201)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(response_data)))
+        self.send_header('Connection', 'close')
         self.end_headers()
         self.wfile.write(response_data)
         try:
@@ -76,10 +77,11 @@ def loginUserPathHandler(self):
     response = conn.getresponse()
     if response.status == 200:
         response_data = response.read()
-        print(f"Login response data: {response_data}")
+        print(f"Login response data: {response_data} (Len: {len(response_data)})")
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(response_data)))
+        self.send_header('Connection', 'close')
         self.end_headers()
         self.wfile.write(response_data)
         try:
