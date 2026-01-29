@@ -1,8 +1,7 @@
 FROM python:3.11-slim
 WORKDIR /app
 
-# Copy only Python files and .txt files as requested
-COPY *.py *.txt ./
+
 
 # Use libgl1 instead of libgl1-mesa-glx
 RUN apt-get update && apt-get install -y \
@@ -31,6 +30,9 @@ RUN python -m pip install --no-cache-dir -r requirements.txt
 RUN python -m pip install --no-cache-dir ultralytics==8.3.23
 
 RUN python -m pip install --upgrade tensorflow-cpu
+
+# Copy only Python files and .txt files as requested
+COPY *.py *.txt ./
 
 EXPOSE 8030
 CMD ["python", "recognitionServer.py"]

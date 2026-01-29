@@ -60,6 +60,7 @@ def loginUserPathHandler(self):
     response = conn.getresponse()
     if response.status == 200:
         response_data = response.read()
+        print(f"Login response data: {response_data}")
         self.send_response(200)
         self.end_headers()
         self.wfile.write(response_data)
@@ -71,6 +72,8 @@ def loginUserPathHandler(self):
 
 def getDogBreedInfoPathHandler(self):
     # accept user made photo and return breed info
+
+    print("Handling getDogBreedInfoPathHandler request")
     
     contentType = self.headers.get('Content-Type')
 

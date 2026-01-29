@@ -67,13 +67,16 @@ def loginPathHandler(self):
     })
     
     # Send response
-    self.send_response(200)
-    self.end_headers()
     response = {
         'message': 'Login successful',
         'token': generatedToken
     }
-    self.wfile.write(json.dumps(response).encode('utf-8'))
+    response_bytes = json.dumps(response).encode('utf-8')
+    self.send_response(200)
+    self.send_header('Content-Type', 'application/json')
+    self.send_header('Content-Length', str(len(response_bytes)))
+    self.end_headers()
+    self.wfile.write(response_bytes)
 
 
 def registerPathHandler(self):
@@ -158,13 +161,16 @@ def registerPathHandler(self):
     })
 
     # Send response
-    self.send_response(201)
-    self.end_headers()
     response = {
         'message': 'Registration successful',
         'token': generatedToken
     }
-    self.wfile.write(json.dumps(response).encode('utf-8'))
+    response_bytes = json.dumps(response).encode('utf-8')
+    self.send_response(201)
+    self.send_header('Content-Type', 'application/json')
+    self.send_header('Content-Length', str(len(response_bytes)))
+    self.end_headers()
+    self.wfile.write(response_bytes)
     
     
 TOKEN_TTL = 7200
@@ -228,10 +234,16 @@ def verifyTokenPathHandler(self):
     tokenData = json.loads(tokenData).get('tokenData', {})
     token = tokenData.get('token')
     if verifyToken(token):
+        body = b'Token is valid'
         self.send_response(200)
+        self.send_header('Content-Type', 'text/plain')
+        self.send_header('Content-Length', str(len(body)))
         self.end_headers()
-        self.wfile.write(b'Token is valid')
+        self.wfile.write(body)
     else:
+        body = b'Invalid or expired token'
         self.send_response(401)
+        self.send_header('Content-Type', 'text/plain')
+        self.send_header('Content-Length', str(len(body)))
         self.end_headers()
-        self.wfile.write(b'Invalid or expired token')
+        self.wfile.write(body)
