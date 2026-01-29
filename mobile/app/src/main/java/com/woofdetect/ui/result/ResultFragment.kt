@@ -103,7 +103,12 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
 
                 result.onFailure { error ->
                     Log.e(TAG, "Analysis failed", error)
-                    showError("Błąd analizy: ${error.message}")
+                    if (error.message?.contains("515") == true) {
+                        showError("Nie rozpoznano rasy.")                            
+                    }
+                    else{
+                        showError("Błąd analizy: ${error.message}")
+                    }
                 }
 
             } catch (e: Exception) {
