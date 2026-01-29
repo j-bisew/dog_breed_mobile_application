@@ -29,33 +29,15 @@ def registerUserPathHandler(self):
     conn = http.client.HTTPConnection(AUTH_IP)
     conn.request("POST", "/register", body=registrationRequestJson, headers={'Content-Type': 'application/json'})
     response = conn.getresponse()
-    if response.status == 201:
-        response_data = response.read()
-        
-        self.close_connection = True
-        
-        self.send_response(201)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Content-Length', str(len(response_data)))
-        self.send_header('Connection', 'close')
-        self.end_headers()
-        self.wfile.write(response_data)
-        self.wfile.flush()
-
-    elif response.status == 200:
+    if response.status == 200:
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b'Registration successful')
     else:
         self.send_response(response.status)
-        response_data = response.read()
-        self.send_header('Content-Length', str(len(response_data)))
         self.end_headers()
+        response_data = response.read()
         self.wfile.write(response_data)
-        try:
-            self.wfile.flush()
-        except:
-            pass
 
 def loginUserPathHandler(self):
     # {loginData: {"username": "user", "password": "password"}}
@@ -78,29 +60,22 @@ def loginUserPathHandler(self):
     response = conn.getresponse()
     if response.status == 200:
         response_data = response.read()
-        print(f"Login response data: {response_data} (Len: {len(response_data)})")
-        
-        # Explicitly instruct server loop to close connection after this request
-        self.close_connection = True
-        
+        response_json = json.loads(response_data.decode('utf-8'))
+        message = response_json.get('message', 'Login successful')
+        token = response_json.get('token', '')
+        response_data = json.dumps({
+            'message': message,
+            'token': token
+        }).encode('utf-8')
+        print(f"Login response data: {response_data}")
         self.send_response(200)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Content-Length', str(len(response_data)))
-        self.send_header('Connection', 'close') 
         self.end_headers()
         self.wfile.write(response_data)
-        self.wfile.flush()
-
     else:
         self.send_response(response.status)
-        response_data = response.read()
-        self.send_header('Content-Length', str(len(response_data)))
         self.end_headers()
+        response_data = response.read()
         self.wfile.write(response_data)
-        try:
-            self.wfile.flush()
-        except:
-            pass
 
 def getDogBreedInfoPathHandler(self):
     # accept user made photo and return breed info

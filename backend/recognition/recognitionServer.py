@@ -6,10 +6,6 @@ METODS = {
     '/submitDogPhoto': recognitionHelperFunctions.submitDogPhotoPathHandler,
 }
 class RecognitionRequestHandler(http.server.BaseHTTPRequestHandler):
-    protocol_version = 'HTTP/1.1'
-    wbufsize = 0
-    disable_nagle_algorithm = True
-
     def do_GET(self):
         if self.path == '/':
             self.send_response(200)

@@ -15,14 +15,6 @@ AUTHORIZATION_REQUIRED_PATHS = [
 ]
 
 class EndpointsRequestHandler(http.server.BaseHTTPRequestHandler):
-    
-    # Use HTTP/1.1 to handle persistent connections better, though we will close them explicitly for safety
-    protocol_version = 'HTTP/1.1'
-    # Disable buffering to ensure data is sent immediately
-    wbufsize = 0
-    # Disable Nagle's algorithm to send small packets immediately
-    disable_nagle_algorithm = True
-
     def do_GET(self):
         if self.path == '/':
             self.send_response(200)
