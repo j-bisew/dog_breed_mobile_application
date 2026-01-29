@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth_prefs")
@@ -44,10 +45,7 @@ class TokenManager(private val context: Context) {
     }
 
     suspend fun isLoggedIn(): Boolean {
-        var token: String? = null
-        context.dataStore.data.map { preferences ->
-            token = preferences[TOKEN_KEY]
-        }.collect {  }
+        val token = getToken().first()
         return !token.isNullOrEmpty()
     }
 }
