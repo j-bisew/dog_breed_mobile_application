@@ -37,7 +37,7 @@ class AuthRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(b'Not Found')
             
 
-def run(server_class=http.server.HTTPServer, handler_class=AuthRequestHandler, port=8010):
+def run(server_class=http.server.ThreadingHTTPServer, handler_class=AuthRequestHandler, port=8010):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print(f'Starting auth server on port {port}...')

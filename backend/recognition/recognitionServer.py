@@ -30,7 +30,7 @@ class RecognitionRequestHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b'Not Found')
 
-def run(server_class=http.server.HTTPServer, handler_class=RecognitionRequestHandler, port=8030):
+def run(server_class=http.server.ThreadingHTTPServer, handler_class=RecognitionRequestHandler, port=8030):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print(f'Starting recognition server on port {port}...')

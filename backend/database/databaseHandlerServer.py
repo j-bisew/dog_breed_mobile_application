@@ -39,7 +39,7 @@ class DatabaseRequestHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b'Not Found')
 
-def run(server_class=http.server.HTTPServer, handler_class=DatabaseRequestHandler, port=8020):
+def run(server_class=http.server.ThreadingHTTPServer, handler_class=DatabaseRequestHandler, port=8020):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print(f'Starting database handler server on port {port}...')

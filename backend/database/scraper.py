@@ -141,5 +141,6 @@ def addSamePhotoToEachFolder(photoPath):
     
 if __name__ == "__main__":
     #scrapeDogBreeds()
+    
+    addMissingBreedsToDB()
     addSamePhotoToEachFolder('mainPhoto.jpg')
-    #addMissingBreedsToDB()
