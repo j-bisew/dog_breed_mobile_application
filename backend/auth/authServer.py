@@ -9,6 +9,9 @@ POST_PATHS = {
 }
 
 class AuthRequestHandler(http.server.BaseHTTPRequestHandler):
+    wbufsize = 0
+    disable_nagle_algorithm = True
+
     def do_GET(self):
         if self.path == '/':
             self.send_response(200)

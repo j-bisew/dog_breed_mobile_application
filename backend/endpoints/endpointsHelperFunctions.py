@@ -34,13 +34,11 @@ def registerUserPathHandler(self):
         self.send_response(201)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(response_data)))
-        self.send_header('Connection', 'close')
+        # self.send_header('Connection', 'close')
         self.end_headers()
         self.wfile.write(response_data)
-        try:
-            self.wfile.flush()
-        except:
-            pass
+        self.wfile.flush()
+
     elif response.status == 200:
         self.send_response(200)
         self.end_headers()
@@ -81,13 +79,11 @@ def loginUserPathHandler(self):
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(response_data)))
-        self.send_header('Connection', 'close')
+        # self.send_header('Connection', 'close') # Let BaseHTTPRequestHandler handle connection state
         self.end_headers()
         self.wfile.write(response_data)
-        try:
-            self.wfile.flush()
-        except:
-            pass
+        self.wfile.flush()
+
     else:
         self.send_response(response.status)
         response_data = response.read()

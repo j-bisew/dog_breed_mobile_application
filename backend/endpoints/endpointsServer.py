@@ -15,6 +15,12 @@ AUTHORIZATION_REQUIRED_PATHS = [
 ]
 
 class EndpointsRequestHandler(http.server.BaseHTTPRequestHandler):
+    
+    # Disable buffering to ensure data is sent immediately
+    wbufsize = 0
+    # Disable Nagle's algorithm to send small packets immediately
+    disable_nagle_algorithm = True
+
     def do_GET(self):
         if self.path == '/':
             self.send_response(200)
