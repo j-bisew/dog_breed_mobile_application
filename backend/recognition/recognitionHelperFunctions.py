@@ -164,7 +164,7 @@ def submitDogPhotoPathHandler(self):
     box, conf = detect_dog_yolo(image)
     if box is None or conf < 0.5:
         print("No dog detected in the photo")
-        self.send_response(500)
+        self.send_response(515)
         self.end_headers()
         self.wfile.write(b'No dog detected in the photo')
         return
@@ -178,12 +178,12 @@ def submitDogPhotoPathHandler(self):
     class_names = CLASS_NAMES
     predictions = predict_breed(model, dog_image, class_names, top_k=1)
     if not predictions:
-        self.send_response(500)
+        self.send_response(515)
         self.end_headers()
         self.wfile.write(b'Error predicting breed')
         return
     breedName, confidence = predictions[0]
-    breedName = breedName.lower()
+    breedName = breedName.lower().replace(' ', '_')
 
 
 

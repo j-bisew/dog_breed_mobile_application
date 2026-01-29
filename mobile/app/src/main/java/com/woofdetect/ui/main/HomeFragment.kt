@@ -13,6 +13,8 @@ import com.woofdetect.R
 import com.woofdetect.databinding.FragmentHomeBinding
 import com.woofdetect.ui.camera.CameraFragment
 import com.woofdetect.ui.result.ResultFragment
+import com.woofdetect.ui.auth.AuthChoiceFragment
+import com.woofdetect.auth.TokenManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -48,6 +50,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 .replace(R.id.fragmentContainer, CameraFragment())
                 .addToBackStack(null)
                 .commit()
+        }
+
+        binding.logoutButton.setOnClickListener {
+            lifecycleScope.launch {
+                try {
+                    TokenManager(requireContext()).clearToken()
+                } catch (e: Exception) {
+                    // ignore token clear errors
+                }
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, AuthChoiceFragment())
+                    .commit()
+            }
         }
     }
 

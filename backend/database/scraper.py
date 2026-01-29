@@ -75,13 +75,55 @@ def scrapeDogBreeds():
         except Exception as e:
             print(f"Failed to process breed: {breed}. Error: {e}")
             notSuccessful.append(breed)
+            # Create a folder and add placeholder files
+            folder_name = breed.replace(' ', '_').lower()
+            folder_path = os.path.join('..', 'database', 'racesFolder', folder_name)
+            os.makedirs(folder_path, exist_ok=True)
+            placeholder_img_path = os.path.join(folder_path, 'mainPhoto.jpg')
+            with open(placeholder_img_path, 'wb') as f:
+                f.write(b'')  # Empty placeholder
+            placeholder_summary_path = os.path.join(folder_path, 'summary')
+            with open(placeholder_summary_path, 'w', encoding='utf-8') as f:
+                f.write(f"Full Name: {breed}\nDescription: Unfortunately, we could not retrieve information for this breed at this time.")
+            cursor.execute('INSERT INTO dog_races (name, folderName) VALUES (?, ?)', (folder_name, folder_name))
+            conn.commit()
 
     # Close the database connection
     conn.close()
 
+
+
     print("Breeds that were not processed successfully:")
     for breed in notSuccessful:
         print(breed)
+
+def addMissingBreedsToDB():
+    conn = sqlite3.connect('raceDB.db')
+    cursor = conn.cursor()
+
+    # For each breed in class_names.txt, fetch its correct name (e.g., "German Shepherd") and a short description from Wikipedia. Also, download the main image of the breed and save it locally in backend/database/racesFolder/{breedName}/ folder as mainPhoto.jpg and summary (no extension, with formatted content).
+
+    # Assuming class_names.txt is in the same directory as scraper.py
+    with open('class_names.txt', 'r') as f:
+        breeds = [line.strip() for line in f if line.strip()]
+    
+    for breed in breeds:
+        folderName = breed.replace(' ', '_').lower()
+        cursor.execute('SELECT COUNT(*) FROM dog_races WHERE folderName = ?', (folderName,))
+        count = cursor.fetchone()[0]
+        if count == 0:
+            folder_name = breed.replace(' ', '_').lower()
+            folder_path = os.path.join('..', 'database', 'racesFolder', folder_name)
+            os.makedirs(folder_path, exist_ok=True)
+            placeholder_img_path = os.path.join(folder_path, 'mainPhoto.jpg')
+            with open(placeholder_img_path, 'wb') as f:
+                f.write(b'')  # Empty placeholder
+            placeholder_summary_path = os.path.join(folder_path, 'summary')
+            with open(placeholder_summary_path, 'w', encoding='utf-8') as f:
+                f.write(f"Full Name: {breed}\nDescription: Unfortunately, we could not retrieve information for this breed at this time.")
+            cursor.execute('INSERT INTO dog_races (name, folderName) VALUES (?, ?)', (folder_name, folder_name))
+            conn.commit()
+    conn.close()
 
 
 def addSamePhotoToEachFolder(photoPath):
@@ -100,3 +142,4 @@ def addSamePhotoToEachFolder(photoPath):
 if __name__ == "__main__":
     #scrapeDogBreeds()
     addSamePhotoToEachFolder('mainPhoto.jpg')
+    #addMissingBreedsToDB()
