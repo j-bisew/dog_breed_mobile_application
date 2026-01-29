@@ -1,49 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="32dp"
-        android:background="@color/lilac_background">
+        android:background="@color/app_background"
+        android:padding="32dp">
 
+    <!-- Logo Container -->
     <LinearLayout
+            android:id="@+id/logoContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/buttonContainer"
+            app:layout_constraintVertical_bias="0.35">
 
-    <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="WoofDetect"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"
-            android:textColor="@color/text_primary"/>
+        <!-- Icon -->
+        <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_dog"
+                android:contentDescription="@string/app_name"
+                app:tint="@color/primary"
+                android:layout_marginBottom="24dp"/>
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Identify dog breed from a image!"
-            android:textSize="14sp"
-            android:layout_marginBottom="32dp"/>
+        <!-- App Name -->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="WoofDetect"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.02"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="8dp"/>
+
+        <!-- Tagline -->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Identify dog breeds instantly"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/text_secondary"
+                android:alpha="0.9"/>
 
     </LinearLayout>
 
-    <Button
-            android:id="@+id/loginButton"
-            android:layout_width="match_parent"
+    <!-- Button Container -->
+    <LinearLayout
+            android:id="@+id/buttonContainer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Zaloguj się"
-            app:backgroundTint="@color/button" />
+            android:orientation="vertical"
+            android:layout_marginTop="48dp"
+            app:layout_constraintTop_toBottomOf="@id/logoContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.4">
 
-    <Button
-            android:id="@+id/registerButton"
-            android:text="Zarejestruj się"
-            android:layout_marginTop="12dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/button" />
-</LinearLayout>
+        <!-- Login Button -->
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/loginButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Sign In"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.02"
+                app:backgroundTint="@color/button"
+                app:cornerRadius="12dp"
+                app:elevation="0dp"
+                android:layout_marginBottom="16dp"/>
+
+        <!-- Register Button -->
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/registerButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Create Account"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.02"
+                app:backgroundTint="@android:color/transparent"
+                app:strokeColor="@color/outline"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="12dp"
+                android:textColor="@color/text_primary"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

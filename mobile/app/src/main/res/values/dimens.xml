@@ -1,5 +1,43 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="fragment_horizontal_margin">16dp</dimen>
-    <dimen name="fragment_vertical_margin">16dp</dimen>
+    <!-- Modern spacing system -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">12dp</dimen>
+    <dimen name="spacing_lg">16dp</dimen>
+    <dimen name="spacing_xl">24dp</dimen>
+    <dimen name="spacing_xxl">32dp</dimen>
+    <dimen name="spacing_xxxl">48dp</dimen>
+
+    <!-- Screen margins -->
+    <dimen name="fragment_horizontal_margin">24dp</dimen>
+    <dimen name="fragment_vertical_margin">24dp</dimen>
+
+    <!-- Card properties -->
+    <dimen name="card_corner_radius">20dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+    <dimen name="card_padding">24dp</dimen>
+
+    <!-- Button properties -->
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="button_corner_radius">12dp</dimen>
+
+    <!-- Input properties -->
+    <dimen name="input_corner_radius">12dp</dimen>
+    <dimen name="input_padding_vertical">16dp</dimen>
+
+    <!-- Icon sizes -->
+    <dimen name="icon_size_sm">24dp</dimen>
+    <dimen name="icon_size_md">48dp</dimen>
+    <dimen name="icon_size_lg">64dp</dimen>
+    <dimen name="icon_size_xl">80dp</dimen>
+
+    <!-- Text sizes -->
+    <dimen name="text_size_display">36sp</dimen>
+    <dimen name="text_size_headline1">32sp</dimen>
+    <dimen name="text_size_headline2">28sp</dimen>
+    <dimen name="text_size_headline3">24sp</dimen>
+    <dimen name="text_size_title">22sp</dimen>
+    <dimen name="text_size_subtitle">18sp</dimen>
+    <dimen name="text_size_body">15sp</dimen>
+    <dimen name="text_size_caption">13sp</dimen>
 </resources>
