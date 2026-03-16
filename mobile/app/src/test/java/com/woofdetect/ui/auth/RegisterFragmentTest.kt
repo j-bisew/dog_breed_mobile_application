@@ -13,6 +13,7 @@ import org.junit.Assert.*
 import io.mockk.coEvery
 import io.mockk.mockk
 import android.view.View
+import org.robolectric.shadows.ShadowLooper
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -233,5 +234,26 @@ class RegisterFragmentTest {
         fragment.view?.findViewById<Button>(R.id.registerButton)?.performClick()
 
         org.robolectric.shadows.ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+    }
+
+    @Test
+    fun `performRegistration success navigates back after delay`() {
+        val mockRepo = mockk<com.woofdetect.repository.AuthRepository>()
+        coEvery { mockRepo.register(any(), any(), any(), any()) } returns
+                Result.success(com.woofdetect.network.dto.RegisterResponse("ok", "token123"))
+
+        val fragment = launchFragment()
+
+        val field = RegisterFragment::class.java.getDeclaredField("authRepository")
+        field.isAccessible = true
+        field.set(fragment, mockRepo)
+
+        fragment.view?.findViewById<android.widget.EditText>(R.id.nameInput)?.setText("Test User")
+        fragment.view?.findViewById<android.widget.EditText>(R.id.usernameInput)?.setText("testuser")
+        fragment.view?.findViewById<android.widget.EditText>(R.id.emailInput)?.setText("test@example.com")
+        fragment.view?.findViewById<android.widget.EditText>(R.id.passwordInput)?.setText("password123")
+        fragment.view?.findViewById<Button>(R.id.registerButton)?.performClick()
+
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
     }
 }
