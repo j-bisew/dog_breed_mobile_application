@@ -62,4 +62,10 @@ class AuthChoiceFragmentTest {
         val fragment = launchFragment()
         fragment.view?.findViewById<Button>(R.id.registerButton)?.performClick()
     }
+
+    @Test
+    fun `onDestroyView cleans up binding`() {
+        val fragment = launchFragment()
+        fragment.onDestroyView()
+    }
 }
