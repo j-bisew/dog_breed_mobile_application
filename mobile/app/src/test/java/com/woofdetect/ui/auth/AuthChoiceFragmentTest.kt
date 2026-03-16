@@ -55,17 +55,29 @@ class AuthChoiceFragmentTest {
     fun `clicking login button navigates to login fragment`() {
         val fragment = launchFragment()
         fragment.view?.findViewById<Button>(R.id.loginButton)?.performClick()
+        fragment.parentFragmentManager.executePendingTransactions()
+
+        val currentFragment = fragment.parentFragmentManager.findFragmentById(R.id.fragmentContainer)
+        assertTrue(currentFragment is LoginFragment)
     }
 
     @Test
     fun `clicking register button navigates to register fragment`() {
         val fragment = launchFragment()
         fragment.view?.findViewById<Button>(R.id.registerButton)?.performClick()
+        fragment.parentFragmentManager.executePendingTransactions()
+
+        val currentFragment = fragment.parentFragmentManager.findFragmentById(R.id.fragmentContainer)
+        assertTrue(currentFragment is RegisterFragment)
     }
 
     @Test
     fun `onDestroyView cleans up binding`() {
         val fragment = launchFragment()
         fragment.onDestroyView()
+        // po onDestroyView binding powinien być null
+        val field = AuthChoiceFragment::class.java.getDeclaredField("_binding")
+        field.isAccessible = true
+        assertNull(field.get(fragment))
     }
 }

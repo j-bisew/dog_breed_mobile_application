@@ -12,6 +12,7 @@ import org.robolectric.annotation.Config
 import org.junit.Assert.*
 import io.mockk.coEvery
 import io.mockk.mockk
+import android.view.View
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -61,6 +62,10 @@ class RegisterFragmentTest {
         fragment.view?.findViewById<EditText>(R.id.emailInput)?.setText("user@test.com")
         fragment.view?.findViewById<EditText>(R.id.passwordInput)?.setText("password123")
         fragment.view?.findViewById<Button>(R.id.registerButton)?.performClick()
+
+        val errorText = fragment.view?.findViewById<android.widget.TextView>(R.id.errorText)
+        assertEquals(View.VISIBLE, errorText?.visibility)
+        assertEquals("Imię nie może być puste", errorText?.text.toString())
     }
 
     @Test
@@ -71,6 +76,10 @@ class RegisterFragmentTest {
         fragment.view?.findViewById<EditText>(R.id.emailInput)?.setText("user@test.com")
         fragment.view?.findViewById<EditText>(R.id.passwordInput)?.setText("password123")
         fragment.view?.findViewById<Button>(R.id.registerButton)?.performClick()
+
+        val errorText = fragment.view?.findViewById<android.widget.TextView>(R.id.errorText)
+        assertEquals(View.VISIBLE, errorText?.visibility)
+        assertEquals("Username nie może być pusty", errorText?.text.toString())
     }
 
     @Test
@@ -81,6 +90,10 @@ class RegisterFragmentTest {
         fragment.view?.findViewById<EditText>(R.id.emailInput)?.setText("")
         fragment.view?.findViewById<EditText>(R.id.passwordInput)?.setText("password123")
         fragment.view?.findViewById<Button>(R.id.registerButton)?.performClick()
+
+        val errorText = fragment.view?.findViewById<android.widget.TextView>(R.id.errorText)
+        assertEquals(View.VISIBLE, errorText?.visibility)
+        assertEquals("Email nie może być pusty", errorText?.text.toString())
     }
 
     @Test
@@ -91,6 +104,10 @@ class RegisterFragmentTest {
         fragment.view?.findViewById<EditText>(R.id.emailInput)?.setText("user@test.com")
         fragment.view?.findViewById<EditText>(R.id.passwordInput)?.setText("")
         fragment.view?.findViewById<Button>(R.id.registerButton)?.performClick()
+
+        val errorText = fragment.view?.findViewById<android.widget.TextView>(R.id.errorText)
+        assertEquals(View.VISIBLE, errorText?.visibility)
+        assertEquals("Hasło nie może być puste", errorText?.text.toString())
     }
 
     @Test
@@ -101,6 +118,10 @@ class RegisterFragmentTest {
         fragment.view?.findViewById<EditText>(R.id.emailInput)?.setText("user@test.com")
         fragment.view?.findViewById<EditText>(R.id.passwordInput)?.setText("123")
         fragment.view?.findViewById<Button>(R.id.registerButton)?.performClick()
+
+        val errorText = fragment.view?.findViewById<android.widget.TextView>(R.id.errorText)
+        assertEquals(View.VISIBLE, errorText?.visibility)
+        assertEquals("Hasło musi mieć minimum 8 znaków", errorText?.text.toString())
     }
 
     @Test
