@@ -171,4 +171,42 @@ class TokenManagerTest {
         assertEquals("token123", token)
         assertEquals("user2", username)
     }
+
+    @Test
+    fun `getToken flow emits multiple values`() = runBlocking {
+        tokenManager.saveToken("token1")
+        val first = tokenManager.getToken().first()
+        assertEquals("token1", first)
+
+        tokenManager.saveToken("token2")
+        val second = tokenManager.getToken().first()
+        assertEquals("token2", second)
+    }
+
+    @Test
+    fun `getUsername flow emits multiple values`() = runBlocking {
+        tokenManager.saveToken("token", "user1")
+        val first = tokenManager.getUsername().first()
+        assertEquals("user1", first)
+
+        tokenManager.saveToken("token", "user2")
+        val second = tokenManager.getUsername().first()
+        assertEquals("user2", second)
+    }
+
+    @Test
+    fun `getToken flow emits null after clear`() = runBlocking {
+        tokenManager.saveToken("token123")
+        tokenManager.clearToken()
+        val token = tokenManager.getToken().first()
+        assertNull(token)
+    }
+
+    @Test
+    fun `getUsername flow emits null after clear`() = runBlocking {
+        tokenManager.saveToken("token", "username")
+        tokenManager.clearToken()
+        val username = tokenManager.getUsername().first()
+        assertNull(username)
+    }
 }
