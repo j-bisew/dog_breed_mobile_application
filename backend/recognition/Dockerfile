@@ -1,38 +1,40 @@
-FROM python:3.11-slim
+FROM golang:1.21-bookworm AS builder
+
 WORKDIR /app
 
-
-
-# Use libgl1 instead of libgl1-mesa-glx
-RUN apt-get update && apt-get install -y \
-    libgl1 \
-    libglib2.0-0 \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    ca-certificates \
+    curl \
+    tar \
     && rm -rf /var/lib/apt/lists/*
 
-# Install requirements if present; upgrade pip first and use `python -m pip`
-# 1. Install pip tools
-RUN python -m pip install --upgrade pip setuptools wheel
+ARG ONNXRUNTIME_VERSION=1.24.1
+RUN mkdir -p /opt/ort && \
+    curl -fsSL -o /tmp/onnxruntime.tgz "https://github.com/microsoft/onnxruntime/releases/download/v${ONNXRUNTIME_VERSION}/onnxruntime-linux-x64-${ONNXRUNTIME_VERSION}.tgz" && \
+    tar -xzf /tmp/onnxruntime.tgz -C /opt/ort --strip-components=1 && \
+    rm -f /tmp/onnxruntime.tgz
 
-# 2. Force-install CPU Torch first 
-# Using --index-url ensures we ONLY look at the CPU-only repo
-RUN python -m pip install --no-cache-dir \
-    torch==2.1.0 \
-    torchvision==0.16.0 \
-    torchaudio==2.1.0 \
-    --index-url https://download.pytorch.org/whl/cpu
+COPY go.mod go.sum* ./
+COPY main.go handlers.go inference.go class_names.txt ./
+COPY models/go ./models/go
 
-# 3. Install other requirements from your file
-COPY requirements.txt .
-RUN python -m pip install --no-cache-dir -r requirements.txt
+RUN go mod tidy
+RUN go mod download
 
-# 4. Install Ultralytics WITHOUT --no-deps
-# Since Torch is already installed, it will skip torch and just get the helpers
-RUN python -m pip install --no-cache-dir ultralytics==8.3.23
+RUN go build -o recognitionServer .
 
-RUN python -m pip install --upgrade tensorflow-cpu
+FROM debian:bookworm-slim
 
-# Copy only Python files and .txt files as requested
-COPY *.py *.txt ./
+WORKDIR /app
+
+COPY --from=builder /app/recognitionServer ./recognitionServer
+COPY --from=builder /app/class_names.txt ./class_names.txt
+COPY --from=builder /app/models/go ./models/go
+COPY --from=builder /opt/ort/lib/libonnxruntime.so* ./lib/
+
+RUN mkdir -p dog_photos
 
 EXPOSE 8030
-CMD ["python", "recognitionServer.py"]
+
+CMD ["./recognitionServer"]

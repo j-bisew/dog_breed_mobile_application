@@ -1,11 +1,20 @@
-FROM python:3.11-slim
+FROM golang:1.21-alpine AS builder
+
 WORKDIR /app
 
-# Copy only Python files and .txt files as requested
-COPY *.py *.txt ./
+COPY main.go handlers.go go.mod go.sum* ./
 
-# Install requirements if present
-RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
+RUN go mod tidy
+RUN go mod download
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o endpointsServer .
+
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/endpointsServer .
 
 EXPOSE 8000
-CMD ["python", "endpointsServer.py"]
+
+CMD ["./endpointsServer"]

@@ -1,11 +1,31 @@
-FROM python:3.11-slim
+FROM golang:1.21-alpine AS builder
+
 WORKDIR /app
 
-# Copy only Python files and .txt files as requested
-COPY *.py *.txt ./
+# Copy Go source files
+COPY main.go handlers.go utils.go go.mod go.sum* ./
 
-# Install requirements if present
-RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
+# Copy keys file
+COPY keys.txt ./
+
+# Download dependencies
+RUN go mod tidy
+RUN go mod download
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o authServer .
+
+# Final stage
+FROM alpine:latest
+
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /app/authServer .
+
+# Copy keys file
+COPY keys.txt ./
 
 EXPOSE 8010
-CMD ["python", "authServer.py"]
+
+CMD ["./authServer"]
