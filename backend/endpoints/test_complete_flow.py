@@ -86,7 +86,7 @@ def run_test():
         resp = requests.post(f"{BASE_URL}/loginUser", json=login_payload)
         print(f"Status Code: {resp.status_code}")
         
-        if resp.status_code == 200:
+        if resp.status_code == 202:
             try:
                 data = resp.json()
                 print(f"Response: {data}")

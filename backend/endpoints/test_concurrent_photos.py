@@ -10,8 +10,8 @@ from concurrent.futures import ThreadPoolExecutor
 # Configuration
 BASE_URL = "http://localhost:8000"
 TARGET_URL = f"{BASE_URL}/getDogBreedInfo"
-CONCURRENT_REQUESTS = 20
-TIMEOUT = 30
+CONCURRENT_REQUESTS = 250
+TIMEOUT = 120
 
 def register_and_login():
     """
@@ -37,7 +37,7 @@ def register_and_login():
     
     try:
         reg_resp = requests.post(f"{BASE_URL}/registerUser", json=reg_data)
-        if reg_resp.status_code not in [200, 201]:
+        if reg_resp.status_code not in [200, 201, 202]:
             print(f"Registration failed: {reg_resp.text}")
             return None
     except Exception as e:
@@ -55,7 +55,7 @@ def register_and_login():
     
     try:
         login_resp = requests.post(f"{BASE_URL}/loginUser", json=login_data)
-        if login_resp.status_code == 200:
+        if login_resp.status_code in [200, 202]:
             data = login_resp.json()
             token = data.get('token')
             print("Login successful, token received.")
@@ -167,8 +167,8 @@ def run_photo_concurrency_test():
         # Speedup estimation
         estimated_seq = sum(durations)
         speedup = estimated_seq / total_duration
-        print(f"Sum of Latencies (Est. Sequential): {estimated_seq:.4f}s")
-        print(f"Concurrency Speedup Factor: {speedup:.2f}x")
+        # print(f"Sum of Latencies (Est. Sequential): {estimated_seq:.4f}s")
+        # print(f"Concurrency Speedup Factor: {speedup:.2f}x")
 
     if failed:
         print("\nFailures:")

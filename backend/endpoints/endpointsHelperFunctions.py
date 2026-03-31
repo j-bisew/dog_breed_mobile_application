@@ -162,20 +162,24 @@ def getDogBreedInfoPathHandler(self):
                     # Fallback if header is missing for some reason
                     self.send_header('Content-Type', 'application/json')
                 
+                self.send_header('Content-Length', str(len(response_data)))
                 self.send_header('Connection', 'close')
                 
                 self.end_headers()
                 self.wfile.write(response_data)
             else:
                 self.send_response(breedInfoResponse.status)
+                self.send_header('Content-Length', str(len(response_data)))
                 self.send_header('Connection', 'close')
                 self.end_headers()
                 self.wfile.write(response_data)
         
         else:
             self.send_response(response.status)
-            self.end_headers()
             response_data = response.read()
+            self.send_header('Content-Length', str(len(response_data)))
+            self.send_header('Connection', 'close')
+            self.end_headers()
             self.wfile.write(response_data)
         
         

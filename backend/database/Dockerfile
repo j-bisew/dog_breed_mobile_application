@@ -1,11 +1,31 @@
-FROM python:3.11-slim
+FROM golang:1.21-alpine AS builder
+
 WORKDIR /app
 
-# Copy only Python files and .txt files as requested
-COPY *.py *.txt ./
+# Copy Go source files
+COPY main.go handlers.go database.go go.mod ./
 
-# Install requirements if present
-RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
+# Download dependencies
+RUN go mod tidy
+RUN go mod download
+
+# Build the application (no CGO needed with modernc.org/sqlite)
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o databaseServer .
+
+# Final stage
+FROM alpine:latest
+
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /app/databaseServer .
+
+# Copy database files
+COPY *.db* ./
+
+# Copy race folder with categories
+COPY racesFolder ./racesFolder
 
 EXPOSE 8020
-CMD ["python", "databaseHandlerServer.py"]
+
+CMD ["./databaseServer"]
