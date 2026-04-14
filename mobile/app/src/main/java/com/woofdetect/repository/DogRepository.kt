@@ -1,5 +1,6 @@
 package com.woofdetect.repository
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
@@ -14,6 +15,8 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 // Helpers for working with raw multipart bytes
@@ -54,7 +57,12 @@ class DogRepository {
         photoUri: Uri,
     ): Result<DogResult> = withContext(Dispatchers.IO) {
         try {
-            val requestBody = photoFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            val normalizedJpegBytes = normalizeToJpegBytes(photoFile)
+            val requestBody = if (normalizedJpegBytes != null) {
+                normalizedJpegBytes.toRequestBody("image/jpeg".toMediaTypeOrNull())
+            } else {
+                photoFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            }
             val photoPart = MultipartBody.Part.createFormData("photo", photoFile.name, requestBody)
 
             Log.d(TAG, "Sending photo to API: ${photoFile.name}, size: ${photoFile.length()} bytes")
@@ -228,6 +236,22 @@ class DogRepository {
         } catch (e: Exception) {
             Log.e(TAG, "Exception during feedback submission", e)
             Result.failure(e)
+        }
+    }
+}
+
+private fun normalizeToJpegBytes(photoFile: File): ByteArray? {
+    if (!photoFile.exists() || photoFile.length() == 0L) {
+        return null
+    }
+
+    val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath) ?: return null
+    return ByteArrayOutputStream().use { out ->
+        val ok = bitmap.compress(Bitmap.CompressFormat.JPEG, 92, out)
+        if (!ok) {
+            null
+        } else {
+            out.toByteArray()
         }
     }
 }

@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -129,31 +131,85 @@ func getDogRaceInfoFromDB(raceID *int, raceName string) (*RaceInfo, error) {
 	}
 	defer db.Close()
 
-	var query string
-	var params interface{}
-
 	if raceID != nil {
-		query = "SELECT id, name, folderName FROM dog_races WHERE id = ?"
-		params = *raceID
+		return queryRaceInfoByID(db, *raceID)
 	} else if raceName != "" {
-		query = "SELECT id, name, folderName FROM dog_races WHERE name = ?"
-		params = raceName
+		if info, err := queryRaceInfoByNameOrFolder(db, raceName); err == nil {
+			return info, nil
+		}
+
+		folderCandidate := normalizeRaceLookupKey(raceName)
+		if folderCandidate != "" {
+			folderPath := filepath.Join("racesFolder", folderCandidate)
+			if stat, statErr := os.Stat(folderPath); statErr == nil && stat.IsDir() {
+				return &RaceInfo{
+					ID:         0,
+					Name:       folderCandidate,
+					FolderName: folderCandidate,
+				}, nil
+			}
+		}
+
+		return nil, sql.ErrNoRows
 	} else {
 		return nil, fmt.Errorf("invalid request data")
 	}
+}
 
+func queryRaceInfoByID(db *sql.DB, raceID int) (*RaceInfo, error) {
 	var id int
 	var name, folderName string
-	err = db.QueryRow(query, params).Scan(&id, &name, &folderName)
+	err := db.QueryRow("SELECT id, name, folderName FROM dog_races WHERE id = ?", raceID).Scan(&id, &name, &folderName)
 	if err != nil {
 		return nil, err
 	}
 
-	return &RaceInfo{
-		ID:         id,
-		Name:       name,
-		FolderName: folderName,
-	}, nil
+	return &RaceInfo{ID: id, Name: name, FolderName: folderName}, nil
+}
+
+func queryRaceInfoByNameOrFolder(db *sql.DB, raceName string) (*RaceInfo, error) {
+	normalized := normalizeRaceLookupKey(raceName)
+	if normalized == "" {
+		return nil, sql.ErrNoRows
+	}
+
+	var id int
+	var name, folderName string
+
+	err := db.QueryRow(
+		"SELECT id, name, folderName FROM dog_races WHERE lower(name) = ? OR lower(folderName) = ? LIMIT 1",
+		normalized,
+		normalized,
+	).Scan(&id, &name, &folderName)
+	if err == nil {
+		return &RaceInfo{ID: id, Name: name, FolderName: folderName}, nil
+	}
+
+	compact := strings.ReplaceAll(normalized, "_", "")
+	if compact == "" {
+		return nil, err
+	}
+
+	err = db.QueryRow(
+		"SELECT id, name, folderName FROM dog_races WHERE REPLACE(lower(name), '_', '') = ? OR REPLACE(lower(folderName), '_', '') = ? LIMIT 1",
+		compact,
+		compact,
+	).Scan(&id, &name, &folderName)
+	if err != nil {
+		return nil, err
+	}
+
+	return &RaceInfo{ID: id, Name: name, FolderName: folderName}, nil
+}
+
+func normalizeRaceLookupKey(value string) string {
+	v := strings.TrimSpace(strings.ToLower(value))
+	v = strings.ReplaceAll(v, "-", "_")
+	v = strings.ReplaceAll(v, " ", "_")
+	for strings.Contains(v, "__") {
+		v = strings.ReplaceAll(v, "__", "_")
+	}
+	return strings.Trim(v, "_")
 }
 
 func incrementTimesSearchedInDB(raceID int) error {

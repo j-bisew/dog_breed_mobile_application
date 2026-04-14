@@ -244,9 +244,11 @@ func handleGetDogRaceInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Increment timesSearched
-	err = incrementTimesSearchedInDB(raceInfo.ID)
-	if err != nil {
-		log.Printf("Error incrementing timesSearched: %v\n", err)
+	if raceInfo.ID > 0 {
+		err = incrementTimesSearchedInDB(raceInfo.ID)
+		if err != nil {
+			log.Printf("Error incrementing timesSearched: %v\n", err)
+		}
 	}
 
 	// Read photo and breed info

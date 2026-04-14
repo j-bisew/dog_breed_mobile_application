@@ -16,6 +16,7 @@ import (
 	"sync"
 
 	ort "github.com/yalue/onnxruntime_go"
+	_ "golang.org/x/image/webp"
 )
 
 const (
